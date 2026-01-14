@@ -1,24 +1,57 @@
 import './style.css'
-import typescriptLogo from './typescript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.ts'
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://www.typescriptlang.org/" target="_blank">
-      <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-    </a>
-    <h1>Vite + TypeScript</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite and TypeScript logos to learn more
-    </p>
-  </div>
-`
+interface Pokemon {
+    id: number,
+    name: string,
+    stats: PokemonStat[],
+    cries: PokemonCrie[],
+    pictures: PokemonPicture[],
+    types: PokemonType[],
+    abilities: PokemonAbilitie[],
+    generation:
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+}
+
+interface PokemonForList {
+    name: string,
+    pictures: PokemonPicture[],
+}
+
+interface PokemonStat {
+
+}
+
+interface PokemonAbilitie {
+
+}
+
+interface PokemonCrie {
+
+}
+
+interface PokemonType {
+
+}
+
+interface PokemonPicture {
+
+}
+
+
+async function getPokemonsFromAPI (limit: number = 20,
+                                   offset: number = 0 )
+    : Promise<PokemonForList[] | null> {
+    const urlAPI = `https://pokeapi.co/api/v2/pokemon?${limit}=20&${offset}=0`;
+
+    try {
+        const response = await fetch(urlAPI);
+        if (!response.ok) {
+            throw new Error(response.statusText);
+        }
+        const data = await response.json();
+        console.log(data);
+        return data;
+    } catch (error) {
+        console.error(error);
+    }
+}
