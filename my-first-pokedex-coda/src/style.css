@@ -12,3 +12,13 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+#pokemon {
+    border: solid 1px white;
+}
+
+title {
+    p::first-letter {
+        text-transform:capitalize;
+    }
+}
