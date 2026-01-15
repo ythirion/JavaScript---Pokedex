@@ -37,7 +37,7 @@ export async function getPokemonsFromAPI (limit: number = 20,
                                    offset: number = 0 )
     : Promise<Pokemon[] | null> {
 
-    const urlAPI = `https://pokeapi.co/api/v2/pokemon?${limit}&${offset}`;
+    const urlAPI = `https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`;
 
     try {
         const response = await fetch(urlAPI);
@@ -63,7 +63,7 @@ export async function getPokemonsFromAPI (limit: number = 20,
 }
 
 
-export async function showPokemons (limit: number = 20, offset: number = 0 ): Promise<Pokemon[] | null> {
+export async function showPokemons (limit: number = 20, offset: number ): Promise<Pokemon[] | null> {
     const data = await getPokemonsFromAPI(limit, offset);
 
     if (!data) {

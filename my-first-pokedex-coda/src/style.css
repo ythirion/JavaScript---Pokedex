@@ -17,8 +17,27 @@
     border: solid 1px white;
 }
 
-title {
-    p::first-letter {
-        text-transform:capitalize;
-    }
+#pokemon-list {
+    display: grid;
+    /* Crée 3 colonnes de taille égale */
+    grid-template-columns: repeat(5, 1fr);
+    /* Espace entre les fiches */
+    gap: 40px;
+    /* Centre la grille elle-même si elle ne prend pas toute la largeur */
+    justify-content: center;
+    width: 100%;
+    max-width: 1400px; /* Optionnel : évite que les fiches soient trop larges sur grand écran */
+    margin: 0 auto;    /* Centre le conteneur principal dans la page */
+}
+
+/* On cible la fiche Pokémon (ex: .card ou .pokemon-card) */
+.pokemon-card {
+    display: flex;
+    flex-direction: column; /* Aligne le nom et l'image verticalement */
+    align-items: center;    /* Centre horizontalement le contenu */
+    justify-content: center; /* Centre verticalement le contenu */
+    text-align: center;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
 }
