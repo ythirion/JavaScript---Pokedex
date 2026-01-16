@@ -21,6 +21,7 @@
     display: grid;
     /* Crée 3 colonnes de taille égale */
     grid-template-columns: repeat(5, 1fr);
+    grid-auto-rows: minmax(200px, auto);
     /* Espace entre les fiches */
     gap: 40px;
     /* Centre la grille elle-même si elle ne prend pas toute la largeur */
@@ -40,4 +41,5 @@
     padding: 15px;
     border: 1px solid #ddd;
     border-radius: 8px;
+    height: 100%;
 }
