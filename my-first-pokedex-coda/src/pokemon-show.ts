@@ -12,7 +12,10 @@ export async function renderPokemon(name: string) {
             <img src="${pokemonInformations?.sprites.front_default}" alt="Image de ${pokemonInformations?.name}">
             <p>Id : #${pokemonInformations?.id}</p>
             <p>${stat}</p>
-            <p>Crie : ${pokemonInformations?.cries.latest}</p>
+            <p>Crie : 
+                <audio controls src="${pokemonInformations?.cries.latest}"></audio>
+                <a href="${pokemonInformations?.cries.latest}">Download file</a>
+            </p>
         </div>
     `;
 
