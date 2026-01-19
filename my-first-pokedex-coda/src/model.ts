@@ -17,6 +17,14 @@ export interface Pokemon {
     }
     sprites: {
         front_default: string;
+        other: {
+            home: {
+                front_default: string;
+            }
+            showdown: {
+                front_default: string;
+            }
+        }
     };
     types: PokemonType[];
     abilities: PokemonAbilitie[];
@@ -46,4 +54,20 @@ interface PokemonType {
         name: string;
         url: string;
     }
+}
+
+export function imgPokemon(pokemon: Pokemon) {
+    let srcImg = null;
+
+    if (pokemon.sprites.front_default) {
+        srcImg = pokemon.sprites.front_default;
+    } else if (pokemon.sprites.other.showdown.front_default) {
+        srcImg = pokemon.sprites.other.showdown.front_default;
+    } else if (pokemon.sprites.other.home.front_default){
+        srcImg = pokemon.sprites.other.home.front_default;
+    } else {
+        srcImg = "src/img/favicon.png";
+    }
+
+    return srcImg;
 }

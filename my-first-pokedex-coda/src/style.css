@@ -17,7 +17,7 @@
     border: solid 1px white;
 }
 
-#pokemon-list {
+#div-pokemon {
     display: grid;
     /* Crée 3 colonnes de taille égale */
     grid-template-columns: repeat(5, 1fr);

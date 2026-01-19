@@ -1,8 +1,8 @@
 import type {ResultAPI} from "./model.ts";
 import type {Pokemon} from "./model.ts";
 
-export async function getOnePokemonFromAPI(name: string): Promise<Pokemon | null>  {
-    const urlAPI = `https://pokeapi.co/api/v2/pokemon/${name}`;
+export async function getOnePokemonFromAPI(id: string): Promise<Pokemon | null>  {
+    const urlAPI = `https://pokeapi.co/api/v2/pokemon/${id}/`;
 
     try {
         const responseOnePokemon = await fetch(urlAPI);
@@ -20,8 +20,8 @@ export async function getOnePokemonFromAPI(name: string): Promise<Pokemon | null
 }
 
 
-export async function showOnePokemon(name: string)  {
-    const data = await getOnePokemonFromAPI(name);
+export async function showOnePokemon(id: string)  {
+    const data = await getOnePokemonFromAPI(id);
     if (!data) {
         return null;
     }
