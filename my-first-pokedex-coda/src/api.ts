@@ -1,5 +1,5 @@
 import type {ResultAPI} from "./model.ts";
-import type {Pokemon} from "./model.ts";
+import type {Pokemon, EvolutionChain, Evolutions} from "./model.ts";
 
 export async function getOnePokemonFromAPI(id: string): Promise<Pokemon | null>  {
     const urlAPI = `https://pokeapi.co/api/v2/pokemon/${id}/`;
@@ -25,11 +25,7 @@ export async function showOnePokemon(id: string)  {
     if (!data) {
         return null;
     }
-    console.log(data.id, data.name, data.sprites.front_default, data.cries.latest, data.cries.legacy);
 
-    for (const stat of data.stats) {
-        console.log(`${stat.stat.name}: ${stat.base_stat}`);
-    }
     return data;
 }
 
@@ -70,12 +66,60 @@ export async function showPokemons (limit: number = 20, offset: number ): Promis
         return null;
     }
 
-    for (let pokemon of data) {
-        console.log(pokemon.name);
-        console.log(pokemon.id);
-        console.log(pokemon.sprites?.front_default);
-    }
-
     return data;
 
+}
+
+async function getEvolutionChain (id: string) : Promise<EvolutionChain | null> {
+    const data = await getOnePokemonFromAPI(id);
+    if (!data) {
+        return null;
+    }
+
+    const urlAPIEvolutionChain = data.species.url;
+
+
+    try {
+        const responseOnePokemon = await fetch(urlAPIEvolutionChain);
+
+        if (!responseOnePokemon.ok) {
+            throw new Error(responseOnePokemon.statusText);
+        }
+        const EvolutionChainPokemon = await responseOnePokemon.json() as EvolutionChain;
+
+        return EvolutionChainPokemon;
+
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
+export async function getEvolution (id: string) : Promise<Evolutions | null> {
+    const data = await getEvolutionChain (id);
+
+    if (!data) {
+        return null;
+    }
+
+    const urlAPIEvolution = data.evolution_chain?.url
+
+
+    try {
+        const responseOnePokemon = await fetch(urlAPIEvolution!);
+
+        if (!responseOnePokemon.ok) {
+            throw new Error(responseOnePokemon.statusText);
+        }
+        const evolutionPokemon = await responseOnePokemon.json() as Evolutions;
+
+        console.log(evolutionPokemon.chain?.evolves_to?.[0].species?.name);
+        console.log(evolutionPokemon.chain?.evolves_to?.[0].evolves_to?.[0].species?.name);
+
+        return evolutionPokemon;
+
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
 }

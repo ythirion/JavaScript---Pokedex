@@ -28,6 +28,9 @@ export interface Pokemon {
     };
     types: PokemonType[];
     abilities: PokemonAbilitie[];
+    species: {
+        url: string;
+    }
 // generation:
 }
 
@@ -55,6 +58,29 @@ interface PokemonType {
         url: string;
     }
 }
+
+export interface EvolutionChain {
+    evolution_chain?: {
+        url?: string;
+    }
+}
+
+export interface Evolutions {
+    chain?: {
+        species: {
+            name: string;
+        }
+        evolves_to?: Evolution[];
+    }
+}
+
+interface Evolution {
+        species?: {
+            name?: string;
+        }
+        evolves_to?: Evolution[];
+}
+
 
 export function imgPokemon(pokemon: Pokemon) {
     let srcImg = null;
