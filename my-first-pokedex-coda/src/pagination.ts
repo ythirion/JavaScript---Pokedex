@@ -2,7 +2,7 @@ export let offset = 0;
 const limit = 20;
 const totalPokemon = 1350;
 
-export function previousPage(element, callback:() => void) {
+export function previousPage(element: HTMLElement, callback:() => void) {
 
 
     const setPrevious = () => {
@@ -15,7 +15,7 @@ export function previousPage(element, callback:() => void) {
     element.addEventListener("click", () => setPrevious());
 }
 
-export function nextPage(element, callback:() => void) {
+export function nextPage(element: HTMLElement, callback:() => void) {
 
     const setNext = () => {
         offset += limit;
