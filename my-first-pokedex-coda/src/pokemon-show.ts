@@ -11,6 +11,28 @@ export async function renderPokemon(id: string) {
 
     const pokemonEvolutions = await getEvolution (pokemonInformations?.name!);
 
+    const firstEvolution = pokemonEvolutions?.chain?.species.name;
+
+    let firstEvolutionInformations = null;
+    let secondEvolutionInformations = null;
+    let thirdEvolutionInformations = null;
+
+    if (firstEvolution) {
+        firstEvolutionInformations = await showOnePokemon(firstEvolution);
+    }
+    const secondEvolution = pokemonEvolutions?.chain?.evolves_to?.[0].species?.name;
+    if (secondEvolution) {
+        secondEvolutionInformations = await showOnePokemon(secondEvolution);
+    }
+    const thirdEvolution = pokemonEvolutions?.chain?.evolves_to?.[0].evolves_to?.[0].species?.name;
+    if (thirdEvolution) {
+        thirdEvolutionInformations = await showOnePokemon(thirdEvolution);
+    }
+
+
+
+
+
     const items = `
         <div>
             <img src=${imgPokemon(pokemonInformations!)} alt="Image de ${pokemonInformations?.name}" height="200" alt="Image de ${pokemonInformations?.name}">
@@ -21,9 +43,9 @@ export async function renderPokemon(id: string) {
                 <audio controls src="${pokemonInformations?.cries.latest}"></audio>
                 <a href="${pokemonInformations?.cries.latest}">Download file</a>
             </p>
-            <p>${pokemonEvolutions?.chain?.species.name}</p>
-            <p>${pokemonEvolutions?.chain?.evolves_to?.[0].species?.name}</p>
-            <p>${pokemonEvolutions?.chain?.evolves_to?.[0].evolves_to?.[0].species?.name}</p>
+            <p>${firstEvolution} <img src=${imgPokemon(firstEvolutionInformations!)} alt="Image de pokemon" height="50"></p>
+            <p>${secondEvolution} <img src=${imgPokemon(secondEvolutionInformations!)} alt="Image de pokemon" height="50"></p>
+            <p>${thirdEvolution} <img src=${imgPokemon(thirdEvolutionInformations!)} alt="Image de pokemon" height="50"></p>
         </div>
     `;
 
