@@ -1,6 +1,6 @@
 import './style.css'
 import {showOnePokemon, getEvolution} from './api.ts'
-import {type Evolution, imgPokemon} from "./model.ts";
+import {type Evolution, type ElementOfEvolution, imgPokemon} from "./model.ts";
 import {previousPokemon, nextPokemon} from "./pagination.ts";
 
 export async function renderPokemon(id: string) {
@@ -32,30 +32,44 @@ export async function renderPokemon(id: string) {
 
     const pokemonEvolutions = await getEvolution (pokemonInformations?.name!);
 
-    if (pokemonEvolutions?.chain?.evolves_to) {
-        const firstName = pokemonEvolutions.chain.species?.name;
-        const otherName = evolutionData(pokemonEvolutions.chain.evolves_to, [])
-
-        const fullEvolutionChain = [firstName, ...otherName];
+    if (pokemonEvolutions?.chain?.evolves_to && pokemonEvolutions.chain.species?.name) {
+        const firstPokemon : ElementOfEvolution = {namePokemon: pokemonEvolutions.chain.species?.name, namePreviousPokemon: ""};
+        const tableOfEvolution = evolutionData(pokemonEvolutions.chain.evolves_to, firstPokemon.namePokemon);
+        tableOfEvolution.unshift(firstPokemon);
 
         const evolutionContainer = document.getElementById('pokemon-evolutions');
+
+        let text = `Evolution: ${firstPokemon.namePokemon}`;
+        let previousName = "";
+        for (let i = 1; i <tableOfEvolution.length -1; i++) {
+            if (tableOfEvolution[i].namePreviousPokemon == previousName) {
+                text += ", " + tableOfEvolution[i].namePokemon;
+            }
+            else if (tableOfEvolution[i].namePreviousPokemon != previousName) {
+                text += " → " + tableOfEvolution[i].namePokemon;
+                previousName = tableOfEvolution[i].namePreviousPokemon;
+            }
+        }
+
         if (evolutionContainer) {
-            evolutionContainer.innerHTML = `Evolutions: ${fullEvolutionChain.join(" → ")}`;
+            evolutionContainer.innerHTML = text;
         }
     }
 
     showPokemonPaginationButtons(id);
 }
 
-export function evolutionData(pokemonEvolutions: Evolution[], table: string[]) : string[] {
+export function evolutionData(pokemonEvolutions: Evolution[], previousPokemon : string) : ElementOfEvolution[] {
 
+        let table : ElementOfEvolution[] = []
         for (const pokemon of pokemonEvolutions) {
             if (pokemon.species?.name) {
-                table.push(pokemon.species.name);
+                table.push({namePokemon : pokemon.species.name, namePreviousPokemon : previousPokemon});
             }
 
-            if (pokemon.evolves_to) {
-                evolutionData(pokemon.evolves_to, table);
+            if (pokemon.evolves_to && pokemon.species?.name) {
+                const evo = evolutionData(pokemon.evolves_to, pokemon.species.name);
+                table = [...table, ...evo];
             }
         }
 

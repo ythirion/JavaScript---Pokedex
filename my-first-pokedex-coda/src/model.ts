@@ -76,6 +76,12 @@ export interface Evolution {
         evolves_to?: Evolution[];
 }
 
+export interface ElementOfEvolution {
+    namePokemon: string;
+    namePreviousPokemon: string;
+}
+
+
 export function imgPokemon(pokemon: Pokemon | null) {
     let srcImg = null;
     if (pokemon) {
