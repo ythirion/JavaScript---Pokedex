@@ -113,9 +113,6 @@ export async function getEvolution (id: string) : Promise<Evolutions | null> {
         }
         const evolutionPokemon = await responseOnePokemon.json() as Evolutions;
 
-        console.log(evolutionPokemon.chain?.evolves_to?.[0].species?.name);
-        console.log(evolutionPokemon.chain?.evolves_to?.[0].evolves_to?.[0].species?.name);
-
         return evolutionPokemon;
 
     } catch (error) {

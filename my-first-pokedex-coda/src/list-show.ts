@@ -7,7 +7,6 @@ import {imgPokemon} from "./model.ts";
 export async function renderPokemons () {
     const pokemonsInformations = await showPokemons(20, offset);
 
-
     const items = pokemonsInformations?.map((pokemon) => `
     <div class="pokemon-card" data-id-pokemon ="${pokemon.id}">
              <h3>#${pokemon.id} ${pokemon.name}</h3>

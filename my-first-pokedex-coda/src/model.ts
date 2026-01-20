@@ -66,33 +66,28 @@ export interface EvolutionChain {
 }
 
 export interface Evolutions {
-    chain?: {
-        species: {
-            name: string;
-        }
-        evolves_to?: Evolution[];
-    }
+    chain?: Evolution;
 }
 
-interface Evolution {
+export interface Evolution {
         species?: {
             name?: string;
         }
         evolves_to?: Evolution[];
 }
 
-
-export function imgPokemon(pokemon: Pokemon) {
+export function imgPokemon(pokemon: Pokemon | null) {
     let srcImg = null;
-
-    if (pokemon.sprites.front_default) {
-        srcImg = pokemon.sprites.front_default;
-    } else if (pokemon.sprites.other.showdown.front_default) {
-        srcImg = pokemon.sprites.other.showdown.front_default;
-    } else if (pokemon.sprites.other.home.front_default){
-        srcImg = pokemon.sprites.other.home.front_default;
-    } else {
-        srcImg = "src/img/favicon.png";
+    if (pokemon) {
+        if (pokemon.sprites.front_default) {
+            srcImg = pokemon.sprites.front_default;
+        } else if (pokemon.sprites.other.showdown.front_default) {
+            srcImg = pokemon.sprites.other.showdown.front_default;
+        } else if (pokemon.sprites.other.home.front_default) {
+            srcImg = pokemon.sprites.other.home.front_default;
+        } else {
+            srcImg = "src/img/favicon.png";
+        }
     }
 
     return srcImg;
