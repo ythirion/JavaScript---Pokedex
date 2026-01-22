@@ -41,8 +41,6 @@ interface PokemonStat {
 }
 
 interface PokemonAbilitie {
-    is_hidden: boolean;
-    slot: number;
     ability: {
         name: string;
         url: string;
@@ -50,7 +48,6 @@ interface PokemonAbilitie {
 }
 
 interface PokemonType {
-    slot: number;
     type: {
         name: string;
         url: string;

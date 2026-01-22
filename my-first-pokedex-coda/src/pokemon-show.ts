@@ -42,7 +42,11 @@ export async function renderPokemon(id: string) {
         const pokemonId = await getIdOfPokemonFromName(firstPokemon.namePokemon);
         const imgUrl = imgPokemonFromId(pokemonId!);
 
-        let text = `Evolution: <span class='pokemon-of-evolution-chain' id="${firstPokemon.namePokemon}"><img src="${imgUrl}" alt="Image of ${firstPokemon.namePokemon}" height="70">${firstPokemon.namePokemon}</span>`;
+        let text = `Evolution: <span class='pokemon-of-evolution-chain' id="${firstPokemon.namePokemon}">
+                            <img src="${imgUrl}" alt="Image of ${firstPokemon.namePokemon}" height="70" 
+                            onerror="this.src='src/img/favicon.png'; this.onerror=null;">
+                            ${firstPokemon.namePokemon}
+                            </span>`;
         let previousName = "";
         for (let i = 1; i < tableOfEvolution.length; i++) {
 
@@ -50,10 +54,16 @@ export async function renderPokemon(id: string) {
             const imgUrl = imgPokemonFromId(pokemonId!);
 
             if (tableOfEvolution[i].namePreviousPokemon == previousName) {
-                text += ", " + `<span class="pokemon-of-evolution-chain" id="${tableOfEvolution[i].namePokemon}">` + `<img src="${imgUrl}" alt="Image of ${tableOfEvolution[i].namePokemon}" height="70">` + tableOfEvolution[i].namePokemon + "</span>";
+                text += ", " + `<span class="pokemon-of-evolution-chain" id="${tableOfEvolution[i].namePokemon}">`
+                    + `<img src="${imgUrl}" alt="Image of ${tableOfEvolution[i].namePokemon}" height="70" 
+                    onerror="this.src='src/img/favicon.png'; this.onerror=null;">` + tableOfEvolution[i].namePokemon
+                    + "</span>";
             }
             else {
-                text += " → " + `<span class="pokemon-of-evolution-chain" id="${tableOfEvolution[i].namePokemon}">` + `<img src="${imgUrl}" alt="Image of ${tableOfEvolution[i].namePokemon}" height="70">` + tableOfEvolution[i].namePokemon + "</span>";
+                text += " → " + `<span class="pokemon-of-evolution-chain" id="${tableOfEvolution[i].namePokemon}">`
+                    + `<img src="${imgUrl}" alt="Image of ${tableOfEvolution[i].namePokemon}" height="70" 
+                    onerror="this.src='src/img/favicon.png'; this.onerror=null;">` + tableOfEvolution[i].namePokemon
+                    + "</span>";
                 previousName = tableOfEvolution[i].namePreviousPokemon;
             }
         }

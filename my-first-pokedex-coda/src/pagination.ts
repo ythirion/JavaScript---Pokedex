@@ -32,7 +32,11 @@ export function previousPokemon (element: HTMLElement, id: string, callback:() =
     const setPrevious = () => {
         let idInt = parseInt(id);
         idInt -= 1 ;
-        if (idInt == 0) {
+        if (idInt == 1 - 1) {
+            idInt = 10325;
+        }
+
+        if (idInt == 10001 - 1) {
             idInt = 1025;
         }
         const idString = idInt.toString();
@@ -48,6 +52,10 @@ export function nextPokemon(element: HTMLElement, id: string, callback:() => voi
         let idInt = parseInt(id);
         idInt += 1;
         if (idInt == 1025 + 1 ) {
+            idInt = 10001;
+        }
+
+        if (idInt == 10325 + 1) {
             idInt = 1;
         }
         const idString = idInt.toString();

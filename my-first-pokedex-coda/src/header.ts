@@ -8,6 +8,7 @@ const header = `
         <input type="search" id="search" placeholder="Search...">
         <p id="error-message"></p>
         <input type="button" value="Search" id="searchBtn">
+        <input type="button" value="Advanced Search" id="advancedSearch">
     </section>
 </header>
 `

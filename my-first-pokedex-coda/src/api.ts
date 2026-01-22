@@ -155,3 +155,28 @@ export async function  getIdOfPokemonFromName(name: string) {
 
     return idPokemon;
 }
+
+export async function getTypes() {
+    const urlAPI = `https://pokeapi.co/api/v2/type`;
+
+    try {
+        const response = await fetch(urlAPI);
+        if (!response.ok) {
+            throw new Error(response.statusText);
+        }
+        const data = await response.json() as ResultAPI;
+
+        const tableOfTypes = [];
+
+        for (let type of data.results) {
+            const nameOfPokemon = type.name;
+            tableOfTypes.push(nameOfPokemon);
+        }
+
+        return tableOfTypes;
+
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}

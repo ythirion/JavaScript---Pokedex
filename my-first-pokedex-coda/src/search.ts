@@ -37,6 +37,10 @@ async function getPokemonCorrespondingToSearch(searchValue: string) {
 
         pokemonId!.innerHTML = "";
 
+        if (arrayOfIdPokemon.length == 0) {
+            pokemonId!.innerHTML += `<p>Oops! You haven't caught this pokemon yet.</p>`;
+        }
+
         for (let id of arrayOfIdPokemon) {
             const idToString = id.toString();
             const pokemonInformations = await showOnePokemon(idToString);
@@ -61,5 +65,3 @@ async function getPokemonCorrespondingToSearch(searchValue: string) {
 
     }
 }
-
-
