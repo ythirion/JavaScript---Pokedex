@@ -1,6 +1,6 @@
 export let offset = 0;
 const limit = 20;
-const totalPokemon = 1006;
+const totalPokemon = 1350;
 
 export function previousPage(element: HTMLElement, callback:() => void) {
 

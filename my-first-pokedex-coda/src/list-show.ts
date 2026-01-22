@@ -1,7 +1,7 @@
 import {nextPage, previousPage, offset} from "./pagination.ts";
 import {showPokemons} from './api.ts'
-import {renderPokemon, showPokemonPaginationButtons} from "./pokemon-show.ts";
-import {imgPokemon} from "./model.ts";
+import {renderPokemon} from "./pokemon-show.ts";
+import {imgPokemonFromInterface} from "./model.ts";
 
 
 export async function renderPokemons () {
@@ -10,7 +10,7 @@ export async function renderPokemons () {
     const items = pokemonsInformations?.map((pokemon) => `
     <div class="pokemon-card" data-id-pokemon="${pokemon.id}">
              <h3>#${pokemon.id} ${pokemon.name}</h3>
-             <img src=${imgPokemon(pokemon)} alt="Image de ${pokemon.name}" height="100"> 
+             <img src=${imgPokemonFromInterface(pokemon)} alt="Image de ${pokemon.name}" height="100" onerror="this.src='src/img/favicon.png'; this.onerror=null;"> 
      </div>`);
 
     const pokemonId = document.getElementById('div-pokemon');
@@ -20,7 +20,6 @@ export async function renderPokemons () {
     for (const div of divs) {
         div.addEventListener('click', () => {
             renderPokemon(div.getAttribute('data-id-pokemon')!);
-            showPokemonPaginationButtons (div.getAttribute('data-id-pokemon')!);
         })
     }
 

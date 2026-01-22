@@ -1,6 +1,6 @@
 import './style.css'
-import {showOnePokemon, getEvolution} from './api.ts'
-import {type Evolution, type ElementOfEvolution, imgPokemon} from "./model.ts";
+import {showOnePokemon, getEvolution, getIdOfPokemonFromName} from './api.ts'
+import {type Evolution, type ElementOfEvolution, imgPokemonFromInterface, imgPokemonFromId} from "./model.ts";
 import {previousPokemon, nextPokemon} from "./pagination.ts";
 
 export async function renderPokemon(id: string) {
@@ -14,7 +14,7 @@ export async function renderPokemon(id: string) {
 
     const items = `
         <div>
-            <img src=${imgPokemon(pokemonInformations!)} alt="Image de ${pokemonInformations?.name}" height="200">
+            <img src=${imgPokemonFromInterface(pokemonInformations!)} alt="Image de ${pokemonInformations?.name}" height="200" onerror="this.src='src/img/favicon.png'; this.onerror=null;">
             <p>${nameUpperCase}</p>
             <p>Id : #${pokemonInformations?.id}</p>
             <p>${stat}</p>
@@ -39,14 +39,21 @@ export async function renderPokemon(id: string) {
 
         const evolutionContainer = document.getElementById('pokemon-evolutions');
 
-        let text = `Evolution: ${firstPokemon.namePokemon}`;
+        const pokemonId = await getIdOfPokemonFromName(firstPokemon.namePokemon);
+        const imgUrl = imgPokemonFromId(pokemonId!);
+
+        let text = `Evolution: <span class='pokemon-of-evolution-chain' id="${firstPokemon.namePokemon}"><img src="${imgUrl}" alt="Image of ${firstPokemon.namePokemon}" height="70">${firstPokemon.namePokemon}</span>`;
         let previousName = "";
-        for (let i = 1; i <tableOfEvolution.length -1; i++) {
+        for (let i = 1; i < tableOfEvolution.length; i++) {
+
+            const pokemonId = await getIdOfPokemonFromName(tableOfEvolution[i].namePokemon);
+            const imgUrl = imgPokemonFromId(pokemonId!);
+
             if (tableOfEvolution[i].namePreviousPokemon == previousName) {
-                text += ", " + tableOfEvolution[i].namePokemon;
+                text += ", " + `<span class="pokemon-of-evolution-chain" id="${tableOfEvolution[i].namePokemon}">` + `<img src="${imgUrl}" alt="Image of ${tableOfEvolution[i].namePokemon}" height="70">` + tableOfEvolution[i].namePokemon + "</span>";
             }
-            else if (tableOfEvolution[i].namePreviousPokemon != previousName) {
-                text += " → " + tableOfEvolution[i].namePokemon;
+            else {
+                text += " → " + `<span class="pokemon-of-evolution-chain" id="${tableOfEvolution[i].namePokemon}">` + `<img src="${imgUrl}" alt="Image of ${tableOfEvolution[i].namePokemon}" height="70">` + tableOfEvolution[i].namePokemon + "</span>";
                 previousName = tableOfEvolution[i].namePreviousPokemon;
             }
         }
@@ -57,23 +64,37 @@ export async function renderPokemon(id: string) {
     }
 
     showPokemonPaginationButtons(id);
+
+    const linkToPokemonOfEvolutionChain = document.getElementsByClassName('pokemon-of-evolution-chain');
+    for (let element of linkToPokemonOfEvolutionChain) {
+        if (element.getAttribute('id')) {
+            const idPokemon = await getIdOfPokemonFromName(element.getAttribute('id')!);
+            const idPokemonToString = idPokemon?.toString();
+            element.addEventListener("click", (event) => {
+                event.stopPropagation();
+                renderPokemon(idPokemonToString!);
+            });
+        }
+    }
 }
+
+
 
 export function evolutionData(pokemonEvolutions: Evolution[], previousPokemon : string) : ElementOfEvolution[] {
 
-        let table : ElementOfEvolution[] = []
-        for (const pokemon of pokemonEvolutions) {
-            if (pokemon.species?.name) {
-                table.push({namePokemon : pokemon.species.name, namePreviousPokemon : previousPokemon});
-            }
-
-            if (pokemon.evolves_to && pokemon.species?.name) {
-                const evo = evolutionData(pokemon.evolves_to, pokemon.species.name);
-                table = [...table, ...evo];
-            }
+    let table : ElementOfEvolution[] = []
+    for (const pokemon of pokemonEvolutions) {
+        if (pokemon.species?.name) {
+            table.push({namePokemon : pokemon.species.name, namePreviousPokemon : previousPokemon});
         }
 
-        return table;
+        if (pokemon.evolves_to && pokemon.species?.name) {
+            const evo = evolutionData(pokemon.evolves_to, pokemon.species.name);
+            table = [...table, ...evo];
+        }
+    }
+
+    return table;
 }
 
 export function showPokemonPaginationButtons (id : string) {

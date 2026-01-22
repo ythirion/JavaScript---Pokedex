@@ -1,6 +1,7 @@
 import './style.css'
 import './header.ts'
 import {renderPokemons} from "./list-show.ts";
+import {search} from "./search.ts";
 
 
 const app = document.getElementById('app')!;
@@ -12,4 +13,6 @@ app.appendChild(pokemonListContainer);
 
 
 renderPokemons();
+
+search();
 

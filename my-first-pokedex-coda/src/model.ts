@@ -31,7 +31,6 @@ export interface Pokemon {
     species: {
         url: string;
     }
-// generation:
 }
 
 interface PokemonStat {
@@ -49,7 +48,6 @@ interface PokemonAbilitie {
         url: string;
     }
 }
-
 
 interface PokemonType {
     slot: number;
@@ -82,19 +80,13 @@ export interface ElementOfEvolution {
 }
 
 
-export function imgPokemon(pokemon: Pokemon | null) {
-    let srcImg = null;
-    if (pokemon) {
-        if (pokemon.sprites.front_default) {
-            srcImg = pokemon.sprites.front_default;
-        } else if (pokemon.sprites.other.showdown.front_default) {
-            srcImg = pokemon.sprites.other.showdown.front_default;
-        } else if (pokemon.sprites.other.home.front_default) {
-            srcImg = pokemon.sprites.other.home.front_default;
-        } else {
-            srcImg = "src/img/favicon.png";
-        }
-    }
-
+export function imgPokemonFromInterface(pokemon: Pokemon | null) {
+    let srcImg = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon?.id}.png`;
     return srcImg;
 }
+
+export function imgPokemonFromId(id : number) {
+    let srcImg = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
+    return srcImg;
+}
+

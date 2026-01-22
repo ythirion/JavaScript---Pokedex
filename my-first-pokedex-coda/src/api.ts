@@ -120,3 +120,38 @@ export async function getEvolution (id: string) : Promise<Evolutions | null> {
         return null;
     }
 }
+
+export async function getNameOfAllPokemons() : Promise<string[] | null> {
+
+    const limit = 1025;
+    const urlAPI = `https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=0`;
+
+    try {
+        const response = await fetch(urlAPI);
+        if (!response.ok) {
+            throw new Error(response.statusText);
+        }
+        const data = await response.json() as ResultAPI;
+
+        const tableOfPokemons = [];
+
+        for (let pokemon of data.results) {
+           const nameOfPokemon = pokemon.name;
+           tableOfPokemons.push(nameOfPokemon);
+        }
+
+        return tableOfPokemons;
+
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
+export async function  getIdOfPokemonFromName(name: string) {
+    const pokemonInformations = await showOnePokemon(name);
+
+    const idPokemon = pokemonInformations?.id;
+
+    return idPokemon;
+}
