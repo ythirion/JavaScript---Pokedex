@@ -169,11 +169,36 @@ export async function getTypes() {
         const tableOfTypes = [];
 
         for (let type of data.results) {
-            const nameOfPokemon = type.name;
-            tableOfTypes.push(nameOfPokemon);
+            const nameOfType = type.name;
+            tableOfTypes.push(nameOfType);
         }
 
         return tableOfTypes;
+
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
+export async function getGenerations() {
+    const urlAPI = `https://pokeapi.co/api/v2/generation`;
+
+    try {
+        const response = await fetch(urlAPI);
+        if (!response.ok) {
+            throw new Error(response.statusText);
+        }
+        const data = await response.json() as ResultAPI;
+
+        const tableOfGenerations = [];
+
+        for (let generation of data.results) {
+            const nameOfGeneration = generation.name;
+            tableOfGenerations.push(nameOfGeneration);
+        }
+
+        return tableOfGenerations;
 
     } catch (error) {
         console.error(error);

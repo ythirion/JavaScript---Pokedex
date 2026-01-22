@@ -1,4 +1,4 @@
-import {getTypes, showOnePokemon} from "./api.ts";
+import {getGenerations, getTypes, showOnePokemon} from "./api.ts";
 import {imgPokemonFromInterface} from "./model.ts";
 import {renderPokemon} from "./pokemon-show.ts";
 
@@ -8,11 +8,18 @@ export async function advancedSearch() {
 
     let checkboxTypes = "";
 
-
     for (let type of tableOfTypes!) {
         //API non mis à jour, aucun pokemon de type unknown ou stellar
         if (type !== "stellar" && type !== "unknown")
         checkboxTypes += "<input type='checkbox' name='types[]' >" + type +"</input>";
+    }
+
+    const tableOfGeneration = await getGenerations();
+
+    let checkboxGeneration = "";
+
+    for (let generation of tableOfGeneration!) {
+        checkboxGeneration += "<input type='checkbox' name='types[]' >" + generation +"</input>";
     }
 
     const advancedSearchButton = document.getElementById('advancedSearch');
@@ -35,10 +42,10 @@ export async function advancedSearch() {
             <!--à voir plus tard quand on aura la foi-->
             <input type="button" value="Search" id="btnSearchAbilities">
             <h3>Generations</h3>
-            <label for="generations">Generation</label>
-            <input type="number" max="9" name="generation" id="generations">
+            ${checkboxGeneration}
             <input type="button" value="Search" id="btnSearchGen">
 `
+
 
         const btnSearchId = document.getElementById('btnSearchId');
         btnSearchId?.addEventListener('click', () => {
