@@ -1,4 +1,4 @@
-import type {ResultAPI} from "./model.ts";
+import type {Generations, ResultAPI} from "./model.ts";
 import type {Pokemon, EvolutionChain, Evolutions} from "./model.ts";
 
 export async function getOnePokemonFromAPI(id: string): Promise<Pokemon | null>  {
@@ -19,16 +19,6 @@ export async function getOnePokemonFromAPI(id: string): Promise<Pokemon | null> 
     }
 }
 
-
-export async function showOnePokemon(id: string)  {
-    const data = await getOnePokemonFromAPI(id);
-    if (!data) {
-        return null;
-    }
-
-    return data;
-}
-
 export async function getPokemonsFromAPI (limit: number = 20,
                                    offset: number = 0 )
     : Promise<Pokemon[] | null> {
@@ -42,13 +32,17 @@ export async function getPokemonsFromAPI (limit: number = 20,
         }
         const data = await response.json() as ResultAPI;
 
-        const tableOfPokemons = [];
+
+        const tableOfPokemonsName = [];
 
         for (let pokemon of data.results) {
-            const responseOnePokemon = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`);
-            const onePokemon = await responseOnePokemon.json() as Pokemon;
-            tableOfPokemons.push(onePokemon);
+            tableOfPokemonsName.push(pokemon.name);
         }
+
+        let tableOfPokemons = await Promise.all(tableOfPokemonsName.map(async pokemon => {
+            const responseOnePokemon = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon}`);
+            return await responseOnePokemon.json() as Pokemon;
+        }));
 
         return tableOfPokemons;
 
@@ -56,18 +50,6 @@ export async function getPokemonsFromAPI (limit: number = 20,
         console.error(error);
         return null;
     }
-}
-
-
-export async function showPokemons (limit: number = 20, offset: number ): Promise<Pokemon[] | null> {
-    const data = await getPokemonsFromAPI(limit, offset);
-
-    if (!data) {
-        return null;
-    }
-
-    return data;
-
 }
 
 async function getEvolutionChain (id: string) : Promise<EvolutionChain | null> {
@@ -149,7 +131,7 @@ export async function getNameOfAllPokemons() : Promise<string[] | null> {
 }
 
 export async function  getIdOfPokemonFromName(name: string) {
-    const pokemonInformations = await showOnePokemon(name);
+    const pokemonInformations = await getOnePokemonFromAPI(name);
 
     const idPokemon = pokemonInformations?.id;
 
@@ -199,6 +181,31 @@ export async function getGenerations() {
         }
 
         return tableOfGenerations;
+
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
+export async function getPokemonIdFromGen(gen: string) : Promise<string[] | null> {
+    const urlAPI = `https://pokeapi.co/api/v2/generation/${gen}/`;
+
+    try {
+        const response = await fetch(urlAPI);
+        if (!response.ok) {
+            throw new Error(response.statusText);
+        }
+        const data = await response.json() as Generations;
+
+        const tableOfPokemon = [];
+
+        for (let pokemon of data.pokemon_species) {
+            const nameOfPokemon = pokemon.name;
+            tableOfPokemon.push(nameOfPokemon);
+        }
+
+        return tableOfPokemon;
 
     } catch (error) {
         console.error(error);

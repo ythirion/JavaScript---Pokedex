@@ -1,5 +1,5 @@
-import {getGenerations, getTypes, showOnePokemon} from "./api.ts";
-import {imgPokemonFromInterface} from "./model.ts";
+import {getGenerations, getTypes, getOnePokemonFromAPI, getPokemonIdFromGen} from "./api.ts";
+import {imgPokemonFromInterface} from "./get-img.ts";
 import {renderPokemon} from "./pokemon-show.ts";
 
 
@@ -17,9 +17,11 @@ export async function advancedSearch() {
     const tableOfGeneration = await getGenerations();
 
     let checkboxGeneration = "";
+    let i = 1;
 
     for (let generation of tableOfGeneration!) {
-        checkboxGeneration += "<input type='checkbox' name='types[]' >" + generation +"</input>";
+        checkboxGeneration += `<input type='checkbox' name='gen[]' id='${i}'>` + generation +"</input>";
+        i++;
     }
 
     const advancedSearchButton = document.getElementById('advancedSearch');
@@ -44,6 +46,7 @@ export async function advancedSearch() {
             <h3>Generations</h3>
             ${checkboxGeneration}
             <input type="button" value="Search" id="btnSearchGen">
+            <p id="no-check-box-gen"></p>
 `
 
 
@@ -61,12 +64,36 @@ export async function advancedSearch() {
                 errorMessage!.innerHTML = "The id should be between 1 and 1025 or 10001 and 10325.";
             }
         })
+
+        const btnGeneration = document.getElementById('btnSearchGen');
+        btnGeneration?.addEventListener('click', () => {
+            const genCheck = document.querySelectorAll("[name = 'gen[]']:checked");
+            if (!genCheck) {
+                const p = document.getElementById('no-check-box-gen');
+                p!.innerHTML = "You should select at least one generation."
+            }
+
+            const tableOfGen = []
+            for (let element of genCheck) {
+                let id = element.getAttribute('id');
+                tableOfGen.push(id);
+            }
+
+            let div = document.getElementById('div-pokemon');
+            div!.innerHTML = "";
+
+            // for (let gen of tableOfGen) {
+            //     let text = await getPokemonFromGen(gen!)
+            //     div!.innerHTML += text;
+            //     console.log(div);
+            // }
+        })
     })
 }
 
 async function getPokemonCorrespondingToId(id: string) {
 
-    const pokemonInformations = await showOnePokemon(id);
+    const pokemonInformations = await getOnePokemonFromAPI(id);
 
     const div = document.getElementById('div-pokemon')
 
@@ -86,5 +113,29 @@ async function getPokemonCorrespondingToId(id: string) {
         div.addEventListener('click', () => {
             renderPokemon(div.getAttribute('data-id-pokemon')!);
         })
+    }
+}
+
+export async function getPokemonFromGen (gen:string) {
+    const tableOfPokemonsId = await getPokemonIdFromGen(gen);
+
+    for (let id of tableOfPokemonsId!) {
+        const pokemonInformations = await getOnePokemonFromAPI(id);
+
+        const items = `
+                <div class="pokemon-card" data-id-pokemon="${pokemonInformations?.id}">
+                     <h3>#${pokemonInformations?.id} ${pokemonInformations?.name}</h3>
+                     <img src=${imgPokemonFromInterface(pokemonInformations)} alt="Image de ${pokemonInformations?.name}" height="100"> 
+                 </div>
+            `;
+
+        const divs = document.querySelectorAll('[data-id-pokemon]');
+        for (const div of divs) {
+            div.addEventListener('click', () => {
+                renderPokemon(div.getAttribute('data-id-pokemon')!);
+            })
+        }
+
+        return items;
     }
 }

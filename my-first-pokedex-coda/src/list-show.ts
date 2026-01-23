@@ -1,46 +1,25 @@
-import {nextPage, previousPage, offset} from "./pagination.ts";
-import {showPokemons} from './api.ts'
-import {renderPokemon} from "./pokemon-show.ts";
-import {imgPokemonFromInterface} from "./model.ts";
+import {offset} from "./pagination.ts";
+import {getPokemonsFromAPI} from './api.ts'
+import {imgPokemonFromInterface} from "./get-img.ts";
+import {showPaginationButtons} from "./show-pagination.ts";
+import "./pokemon-card.ts"
+
 
 
 export async function renderPokemons () {
-    const pokemonsInformations = await showPokemons(20, offset);
+    const pokemonsInformations = await getPokemonsFromAPI(20, offset);
 
-    const items = pokemonsInformations?.map((pokemon) => `
-    <div class="pokemon-card" data-id-pokemon="${pokemon.id}">
-             <h3>#${pokemon.id} ${pokemon.name}</h3>
-             <img src=${imgPokemonFromInterface(pokemon)} alt="Image de ${pokemon.name}" height="100" onerror="this.src='src/img/favicon.png'; this.onerror=null;"> 
-     </div>`);
+    const pokemonContainer = document.getElementById('div-pokemon');
 
-    const pokemonId = document.getElementById('div-pokemon');
-    pokemonId!.innerHTML = items?.join(" ") ?? "";
+    pokemonContainer!.innerHTML = "";
 
-    const divs = document.querySelectorAll('[data-id-pokemon]');
-    for (const div of divs) {
-        div.addEventListener('click', () => {
-            renderPokemon(div.getAttribute('data-id-pokemon')!);
-        })
-    }
+    pokemonsInformations?.map((pokemon) => {
+        pokemonContainer!.innerHTML += `
+        <pokemon-card id="${pokemon.id}" 
+                      name="${pokemon.name}" 
+                      img="${imgPokemonFromInterface(pokemon)}">
+        </pokemon-card>`
+    });
 
     showPaginationButtons ()
-}
-
-export function showPaginationButtons () {
-
-    const buttonPreviousPage = document.createElement('button');
-    buttonPreviousPage.innerHTML = `
-<button id="previous-button">Previous</button>
-`;
-    document.getElementById('div-pokemon')!.appendChild(buttonPreviousPage);
-    previousPage(buttonPreviousPage, () => renderPokemons());
-
-
-    const buttonNextPage = document.createElement('button');
-    buttonNextPage.innerHTML = `
-<button id="next-button">Next</button>
-`;
-    document.getElementById('div-pokemon')!.appendChild(buttonNextPage);
-    nextPage(buttonNextPage, () => renderPokemons());
-
 }

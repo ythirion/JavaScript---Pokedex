@@ -1,6 +1,6 @@
 import {renderPokemon} from "./pokemon-show.ts";
 
-class MyPokemonCard extends HTMLElement {
+class PokemonCard extends HTMLElement {
     constructor() {
         super();
     }
@@ -18,10 +18,10 @@ class MyPokemonCard extends HTMLElement {
 
         this.querySelector('[data-id-pokemon]')?.addEventListener(
             'click', () => {
-                renderPokemon(this.getAttribute('data-id-pokemon')!);
+                renderPokemon(this.getAttribute('id')!);
             }
         );
     }
 }
 
-window.customElements.define('pokemon-card', MyPokemonCard);
+window.customElements.define('pokemon-card', PokemonCard);

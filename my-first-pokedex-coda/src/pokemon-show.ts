@@ -1,76 +1,37 @@
 import './style.css'
-import {showOnePokemon, getEvolution, getIdOfPokemonFromName} from './api.ts'
-import {type Evolution, type ElementOfEvolution, imgPokemonFromInterface, imgPokemonFromId} from "./model.ts";
-import {previousPokemon, nextPokemon} from "./pagination.ts";
+import './pokemon-page.ts'
+import {getOnePokemonFromAPI, getEvolution, getIdOfPokemonFromName} from './api.ts'
+import {type Evolution, type ElementOfEvolution, type Pokemon} from "./model.ts";
+import {imgPokemonFromInterface, imgPokemonFromId} from "./get-img.ts"
+import {showPokemonPaginationButtons} from "./show-pagination.ts";
 
 export async function renderPokemon(id: string) {
-    const pokemonInformations = await showOnePokemon(id);
+    const pokemonInformations = await getOnePokemonFromAPI(id);
 
-    const namePokemon = pokemonInformations?.name;
-    const nameUpperCase = namePokemon?.charAt(0).toUpperCase() + namePokemon!.slice(1).toLowerCase();
+    const pokemonContainer = document.getElementById('div-pokemon');
 
-    const stat = pokemonInformations?.stats.map((pokemon)=>
+    const stat = pokemonInformations?.stats.map((pokemon) =>
         `<p> ${pokemon.stat.name}: ${pokemon.base_stat} </p>`).join(" ");
 
-    const items = `
-        <div>
-            <img src=${imgPokemonFromInterface(pokemonInformations!)} alt="Image de ${pokemonInformations?.name}" height="200" onerror="this.src='src/img/favicon.png'; this.onerror=null;">
-            <p>${nameUpperCase}</p>
-            <p>Id : #${pokemonInformations?.id}</p>
-            <p>${stat}</p>
-            <p>Crie : 
-                <audio controls src="${pokemonInformations?.cries.latest}"></audio>
-                <a href="${pokemonInformations?.cries.latest}">Download file</a>
-            </p>
-            <p id="pokemon-evolutions"></p>
-        </div>
-    `;
+    pokemonContainer!.innerHTML = "";
 
-    const pokemonId = document.getElementById('div-pokemon');
-    pokemonId!.innerHTML = items;
+    if (pokemonInformations) {
+        pokemonContainer!.innerHTML += `
+            <pokemon-page id="${pokemonInformations.id}" 
+                          name="${pokemonInformations.name}" 
+                          img="${imgPokemonFromInterface(pokemonInformations)}"
+                          crie="${pokemonInformations.cries.latest}">
+               ${stat}
+            </pokemon-page> `
+    }
 
+    const pEvolution = document.createElement("p");
+    pEvolution.setAttribute("id", 'pokemon-evolutions');
+    pokemonContainer?.appendChild(pEvolution);
+    console.log(pEvolution);
 
-    const pokemonEvolutions = await getEvolution (pokemonInformations?.name!);
-
-    if (pokemonEvolutions?.chain?.evolves_to && pokemonEvolutions.chain.species?.name) {
-        const firstPokemon : ElementOfEvolution = {namePokemon: pokemonEvolutions.chain.species?.name, namePreviousPokemon: ""};
-        const tableOfEvolution = evolutionData(pokemonEvolutions.chain.evolves_to, firstPokemon.namePokemon);
-        tableOfEvolution.unshift(firstPokemon);
-
-        const evolutionContainer = document.getElementById('pokemon-evolutions');
-
-        const pokemonId = await getIdOfPokemonFromName(firstPokemon.namePokemon);
-        const imgUrl = imgPokemonFromId(pokemonId!);
-
-        let text = `Evolution: <span class='pokemon-of-evolution-chain' id="${firstPokemon.namePokemon}">
-                            <img src="${imgUrl}" alt="Image of ${firstPokemon.namePokemon}" height="70" 
-                            onerror="this.src='src/img/favicon.png'; this.onerror=null;">
-                            ${firstPokemon.namePokemon}
-                            </span>`;
-        let previousName = "";
-        for (let i = 1; i < tableOfEvolution.length; i++) {
-
-            const pokemonId = await getIdOfPokemonFromName(tableOfEvolution[i].namePokemon);
-            const imgUrl = imgPokemonFromId(pokemonId!);
-
-            if (tableOfEvolution[i].namePreviousPokemon == previousName) {
-                text += ", " + `<span class="pokemon-of-evolution-chain" id="${tableOfEvolution[i].namePokemon}">`
-                    + `<img src="${imgUrl}" alt="Image of ${tableOfEvolution[i].namePokemon}" height="70" 
-                    onerror="this.src='src/img/favicon.png'; this.onerror=null;">` + tableOfEvolution[i].namePokemon
-                    + "</span>";
-            }
-            else {
-                text += " → " + `<span class="pokemon-of-evolution-chain" id="${tableOfEvolution[i].namePokemon}">`
-                    + `<img src="${imgUrl}" alt="Image of ${tableOfEvolution[i].namePokemon}" height="70" 
-                    onerror="this.src='src/img/favicon.png'; this.onerror=null;">` + tableOfEvolution[i].namePokemon
-                    + "</span>";
-                previousName = tableOfEvolution[i].namePreviousPokemon;
-            }
-        }
-
-        if (evolutionContainer) {
-            evolutionContainer.innerHTML = text;
-        }
+    if (pokemonInformations) {
+        await pokemonEvolution (pokemonInformations);
     }
 
     showPokemonPaginationButtons(id);
@@ -87,8 +48,6 @@ export async function renderPokemon(id: string) {
         }
     }
 }
-
-
 
 export function evolutionData(pokemonEvolutions: Evolution[], previousPokemon : string) : ElementOfEvolution[] {
 
@@ -107,23 +66,54 @@ export function evolutionData(pokemonEvolutions: Evolution[], previousPokemon : 
     return table;
 }
 
-export function showPokemonPaginationButtons (id : string) {
+async function showPokemonEvolution (firstPokemon: ElementOfEvolution, imgUrl: string, tableOfEvolution: ElementOfEvolution[]) : Promise<string> {
+    let text = `Evolution: <span class='pokemon-of-evolution-chain' id="${firstPokemon.namePokemon}">
+                            <img src="${imgUrl}" alt="Image of ${firstPokemon.namePokemon}" height="70"
+                            onerror="this.src='src/img/favicon.png'; this.onerror=null;">
+                            ${firstPokemon.namePokemon}
+                            </span>`;
 
-    const buttonPreviousPokemon = document.createElement('button');
-    buttonPreviousPokemon.innerHTML = `
-<button id="previous-pokemon">Previous Pokemon</button>
-`;
-    document.getElementById('div-pokemon')?.appendChild(buttonPreviousPokemon);
+    let previousName = "";
+    for (let i = 1; i < tableOfEvolution.length; i++) {
 
-    previousPokemon(buttonPreviousPokemon, id, () => renderPokemon(buttonPreviousPokemon.getAttribute("data-id-pokemon")!));
+        const pokemonId = await getIdOfPokemonFromName(tableOfEvolution[i].namePokemon);
+        const imgUrl = imgPokemonFromId(pokemonId!);
 
+        if (tableOfEvolution[i].namePreviousPokemon == previousName) {
+            text += ", " + `<span class="pokemon-of-evolution-chain" id="${tableOfEvolution[i].namePokemon}">`
+                + `<img src="${imgUrl}" alt="Image of ${tableOfEvolution[i].namePokemon}" height="70"
+                    onerror="this.src='src/img/favicon.png'; this.onerror=null;">` + tableOfEvolution[i].namePokemon
+                + "</span>";
+        }
+        else {
+            text += " → " + `<span class="pokemon-of-evolution-chain" id="${tableOfEvolution[i].namePokemon}">`
+                + `<img src="${imgUrl}" alt="Image of ${tableOfEvolution[i].namePokemon}" height="70"
+                    onerror="this.src='src/img/favicon.png'; this.onerror=null;">` + tableOfEvolution[i].namePokemon
+                + "</span>";
+            previousName = tableOfEvolution[i].namePreviousPokemon;
+        }
+    }
 
-    const buttonNextPokemon = document.createElement('button');
-    buttonNextPokemon.innerHTML = `
-<button id="next-button">Next Pokemon</button>
-`;
-    document.getElementById('div-pokemon')?.appendChild(buttonNextPokemon);
+    return text;
+}
 
-    nextPokemon(buttonNextPokemon, id, () => renderPokemon(buttonNextPokemon.getAttribute("data-id-pokemon")!));
+async function pokemonEvolution (pokemonInformations: Pokemon) {
+    const pokemonEvolutions = await getEvolution (pokemonInformations?.name!);
 
+    if (pokemonEvolutions?.chain?.evolves_to && pokemonEvolutions.chain.species?.name) {
+        const firstPokemon : ElementOfEvolution = {namePokemon: pokemonEvolutions.chain.species?.name, namePreviousPokemon: ""};
+        const tableOfEvolution = evolutionData(pokemonEvolutions.chain.evolves_to, firstPokemon.namePokemon);
+        tableOfEvolution.unshift(firstPokemon);
+
+        const evolutionContainer = document.getElementById('pokemon-evolutions');
+
+        const pokemonId = await getIdOfPokemonFromName(firstPokemon.namePokemon);
+        const imgUrl = imgPokemonFromId(pokemonId!);
+
+        let text = await showPokemonEvolution(firstPokemon, imgUrl, tableOfEvolution);
+
+        if (evolutionContainer) {
+            evolutionContainer.innerHTML += text;
+        }
+    }
 }

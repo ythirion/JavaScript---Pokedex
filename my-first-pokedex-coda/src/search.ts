@@ -1,5 +1,5 @@
-import {getNameOfAllPokemons, getIdOfPokemonFromName, showOnePokemon} from "./api.ts";
-import {imgPokemonFromInterface} from "./model.ts";
+import {getNameOfAllPokemons, getIdOfPokemonFromName, getOnePokemonFromAPI} from "./api.ts";
+import {imgPokemonFromInterface} from "./get-img.ts";
 import {renderPokemon} from "./pokemon-show.ts";
 
 export async function search() {
@@ -43,7 +43,7 @@ async function getPokemonCorrespondingToSearch(searchValue: string) {
 
         for (let id of arrayOfIdPokemon) {
             const idToString = id.toString();
-            const pokemonInformations = await showOnePokemon(idToString);
+            const pokemonInformations = await getOnePokemonFromAPI(idToString);
 
             const items = `
                 <div class="pokemon-card" data-id-pokemon="${pokemonInformations?.id}">
