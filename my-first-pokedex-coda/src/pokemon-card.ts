@@ -16,7 +16,7 @@ class PokemonCard extends HTMLElement {
              height="100" onerror="this.src='src/img/favicon.png'; this.onerror=null;"> 
              </div>`
 
-        this.querySelector('[data-id-pokemon]')?.addEventListener(
+        this.addEventListener(
             'click', () => {
                 renderPokemon(this.getAttribute('id')!);
             }

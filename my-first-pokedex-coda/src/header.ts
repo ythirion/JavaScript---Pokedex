@@ -12,5 +12,7 @@ const header = `
     </section>
 </header>
 `
-let headerHTML = document.getElementById('app');
-headerHTML!.innerHTML = header;
+let app = document.getElementById('app');
+if (app) {
+    app!.innerHTML = header;
+}

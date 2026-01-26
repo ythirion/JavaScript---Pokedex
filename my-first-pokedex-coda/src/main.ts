@@ -11,11 +11,8 @@ const pokemonListContainer = document.createElement('div');
 pokemonListContainer.id = 'div-pokemon';
 app.appendChild(pokemonListContainer);
 
-
-
 renderPokemons();
 
 search();
 
 advancedSearch();
-

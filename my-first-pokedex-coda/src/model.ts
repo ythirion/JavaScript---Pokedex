@@ -67,6 +67,7 @@ export interface Evolutions {
 export interface Evolution {
         species?: {
             name?: string;
+            url?: string;
         }
         evolves_to?: Evolution[];
 }
@@ -80,3 +81,13 @@ export interface Generations {
     pokemon_species: Result[];
 }
 
+export interface Type {
+    pokemon : PokemonOfType[];
+}
+
+interface PokemonOfType {
+    pokemon : {
+        name : string;
+        url : string;
+    }
+}

@@ -1,5 +1,5 @@
-import type {Generations, ResultAPI} from "./model.ts";
-import type {Pokemon, EvolutionChain, Evolutions} from "./model.ts";
+import type {Generations, ResultAPI, Pokemon, EvolutionChain, Evolutions, Type} from "./model.ts";
+import {getIdFromUrl} from "./regex.ts";
 
 export async function getOnePokemonFromAPI(id: string): Promise<Pokemon | null>  {
     const urlAPI = `https://pokeapi.co/api/v2/pokemon/${id}/`;
@@ -105,7 +105,7 @@ export async function getEvolution (id: string) : Promise<Evolutions | null> {
 
 export async function getNameOfAllPokemons() : Promise<string[] | null> {
 
-    const limit = 1025;
+    const limit = 1350;
     const urlAPI = `https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=0`;
 
     try {
@@ -136,6 +136,12 @@ export async function  getIdOfPokemonFromName(name: string) {
     const idPokemon = pokemonInformations?.id;
 
     return idPokemon;
+}
+
+export async function getNameOfPokemonFromId(id: string) {
+    const pokemonInformations = await getOnePokemonFromAPI(id);
+    const namePokemon = pokemonInformations?.name;
+    return namePokemon;
 }
 
 export async function getTypes() {
@@ -201,8 +207,39 @@ export async function getPokemonIdFromGen(gen: string) : Promise<string[] | null
         const tableOfPokemon = [];
 
         for (let pokemon of data.pokemon_species) {
-            const nameOfPokemon = pokemon.name;
-            tableOfPokemon.push(nameOfPokemon);
+            const urlOfPokemon = pokemon.url;
+            const idOfPokemon = getIdFromUrl(urlOfPokemon);
+            if (idOfPokemon) {
+                tableOfPokemon.push(idOfPokemon);
+            }
+        }
+
+        return tableOfPokemon;
+
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
+export async function getPokemonIdFromType(type: string) : Promise<string[] | null> {
+    const urlAPI = `https://pokeapi.co/api/v2/type/${type}/`;
+
+    try {
+        const response = await fetch(urlAPI);
+        if (!response.ok) {
+            throw new Error(response.statusText)
+        }
+        const data = await response.json() as Type;
+
+        const tableOfPokemon = [];
+
+        for (let pokemon of data.pokemon) {
+            const urlOfPokemon = pokemon.pokemon.url;
+            const idOfPokemon = getIdFromUrl(urlOfPokemon);
+            if (idOfPokemon) {
+                tableOfPokemon.push(idOfPokemon);
+            }
         }
 
         return tableOfPokemon;

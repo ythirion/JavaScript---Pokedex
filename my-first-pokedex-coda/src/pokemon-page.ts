@@ -1,5 +1,3 @@
-import {renderPokemon} from "./pokemon-show.ts";
-
 class PokemonPage extends HTMLElement {
     constructor() {
         super();
@@ -24,12 +22,6 @@ class PokemonPage extends HTMLElement {
                 <a href="${crie}">Download file</a>
             </p>
         </div>`
-
-        this.querySelector('[data-id-pokemon]')?.addEventListener(
-            'click', () => {
-                renderPokemon(id!);
-            }
-        );
     }
 }
 
