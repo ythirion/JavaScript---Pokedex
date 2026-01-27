@@ -5,11 +5,15 @@ import {search} from "./search.ts";
 import {showAdvancedSearch} from "./advancedSearch.ts";
 
 
-const app = document.getElementById('app')!;
+const app = document.getElementById('app');
 
 const pokemonListContainer = document.createElement('div');
 pokemonListContainer.id = 'div-pokemon';
-app.appendChild(pokemonListContainer);
+
+if (app) {
+    app.appendChild(pokemonListContainer);
+}
+
 
 renderPokemons();
 

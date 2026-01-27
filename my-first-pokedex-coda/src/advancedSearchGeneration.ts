@@ -9,9 +9,11 @@ export async function showGenerationCheckbox() {
     let checkboxGeneration = "";
     let i = 1;
 
-    for (let generation of tableOfGeneration!) {
-        checkboxGeneration += `<input type='checkbox' name='gen[]' id='${i}'>` + generation + "</input>";
-        i++;
+    if (tableOfGeneration) {
+        for (let generation of tableOfGeneration) {
+            checkboxGeneration += `<input type='checkbox' name='gen[]' id='${i}'>` + generation + "</input>";
+            i++;
+        }
     }
 
     return checkboxGeneration;
@@ -62,7 +64,7 @@ async function showPokemonFromGen (gen:string) {
     const tableOfPokemonInfos = [];
 
     if (tableOfPokemonsId) {
-        for (let id of tableOfPokemonsId!) {
+        for (let id of tableOfPokemonsId) {
             const pokemonInformations = await getOnePokemonFromAPI(id);
 
             tableOfPokemonInfos.push( `

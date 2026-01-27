@@ -18,7 +18,9 @@ class PokemonCard extends HTMLElement {
 
         this.addEventListener(
             'click', () => {
-                renderPokemon(this.getAttribute('id')!);
+                if(id){
+                    renderPokemon(id);
+                }
             }
         );
     }

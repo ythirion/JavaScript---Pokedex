@@ -14,5 +14,5 @@ const header = `
 `
 let app = document.getElementById('app');
 if (app) {
-    app!.innerHTML = header;
+    app.innerHTML = header;
 }

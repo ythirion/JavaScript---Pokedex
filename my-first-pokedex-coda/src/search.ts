@@ -30,38 +30,43 @@ async function getPokemonCorrespondingToSearch(searchValue: string) {
         const arrayOfIdPokemon = [];
         for (let name of resultat) {
             const idOfPokemon = await getIdOfPokemonFromName(name);
-            arrayOfIdPokemon.push(idOfPokemon!);
+            if (idOfPokemon) {
+                arrayOfIdPokemon.push(idOfPokemon);
+            }
         }
 
         const pokemonId = document.getElementById('div-pokemon');
 
-        pokemonId!.innerHTML = "";
+        if (pokemonId) {
+            pokemonId.innerHTML = "";
 
-        if (arrayOfIdPokemon.length == 0) {
-            pokemonId!.innerHTML += `<p>Oops! You haven't caught this pokemon yet.</p>`;
-        }
+            if (arrayOfIdPokemon.length == 0) {
+                pokemonId.innerHTML += `<p>Oops! You haven't caught this pokemon yet.</p>`;
+            }
 
-        for (let id of arrayOfIdPokemon) {
-            const idToString = id.toString();
-            const pokemonInformations = await getOnePokemonFromAPI(idToString);
+            for (let id of arrayOfIdPokemon) {
+                const idToString = id.toString();
+                const pokemonInformations = await getOnePokemonFromAPI(idToString);
 
-            const items = `
+                const items = `
                 <div class="pokemon-card" data-id-pokemon="${pokemonInformations?.id}">
                      <h3>#${pokemonInformations?.id} ${pokemonInformations?.name}</h3>
                      <img src=${imgPokemonFromInterface(pokemonInformations)} alt="Image de ${pokemonInformations?.name}" height="100"> 
                  </div>
             `;
 
-            pokemonId!.innerHTML += items;
+                pokemonId.innerHTML += items;
 
-            const divs = document.querySelectorAll('[data-id-pokemon]');
-            for (const div of divs) {
-                div.addEventListener('click', () => {
-                    renderPokemon(div.getAttribute('data-id-pokemon')!);
-                })
+                const divs = document.querySelectorAll('[data-id-pokemon]');
+                for (const div of divs) {
+                    div.addEventListener('click', () => {
+                        const idOfPokemon = div.getAttribute('data-id-pokemon');
+                        if (idOfPokemon) {
+                            renderPokemon(idOfPokemon);
+                        }
+                    })
+                }
             }
-
         }
-
     }
 }

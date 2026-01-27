@@ -11,15 +11,18 @@ export async function renderPokemons () {
 
     const pokemonContainer = document.getElementById('div-pokemon');
 
-    pokemonContainer!.innerHTML = "";
+    if (pokemonContainer) {
+        pokemonContainer.innerHTML = "";
 
-    pokemonsInformations?.map((pokemon) => {
-        pokemonContainer!.innerHTML += `
+        pokemonsInformations?.map((pokemon) => {
+            pokemonContainer.innerHTML += `
         <pokemon-card id="${pokemon.id}" 
                       name="${pokemon.name}" 
                       img="${imgPokemonFromInterface(pokemon)}">
         </pokemon-card>`
-    });
+        });
+    }
+
 
     showPaginationButtons ()
 }

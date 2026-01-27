@@ -12,9 +12,11 @@ export async function showAdvancedSearch() {
 
     advancedSearchButton?.addEventListener('click', () => {
         const page = document.getElementById('div-pokemon');
-        page!.innerHTML = "";
 
-        page!.innerHTML += `
+        if (page) {
+            page.innerHTML = "";
+
+            page.innerHTML += `
             <h2>Advanced Search</h2>
             <h3>Id Pokemon</h3>
             <label for="id">Id</label>
@@ -32,7 +34,8 @@ export async function showAdvancedSearch() {
             ${checkboxGeneration}
             <input type="button" value="Search" id="btnSearchGen">
             <p id="no-check-box-gen"></p>
-        `
+            `
+        }
         buttonSearchId ();
         buttonSearchType();
         buttonSearchGeneration();

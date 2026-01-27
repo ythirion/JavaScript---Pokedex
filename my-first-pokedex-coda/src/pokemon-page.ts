@@ -11,7 +11,8 @@ class PokemonPage extends HTMLElement {
         const img = this.getAttribute('img');
         const crie  = this.getAttribute('crie');
 
-        this.shadowRoot!.innerHTML = `<div class="pokemon-page" data-id-pokemon="${id}">
+        if (this.shadowRoot) {
+            this.shadowRoot.innerHTML = `<div class="pokemon-page" data-id-pokemon="${id}">
             <img src=${img} alt="Image de ${name}" 
             height="200" onerror="this.src='src/img/favicon.png'; this.onerror=null;">
             <p>${name}</p>
@@ -22,6 +23,7 @@ class PokemonPage extends HTMLElement {
                 <a href="${crie}">Download file</a>
             </p>
         </div>`
+        }
     }
 }
 

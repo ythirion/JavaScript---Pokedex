@@ -9,16 +9,21 @@ export function showPaginationButtons () {
     <button id="previous-button">Previous</button>
     `;
 
-    document.getElementById('div-pokemon')!.appendChild(buttonPreviousPage);
-    previousPage(buttonPreviousPage, () => renderPokemons());
+    const divPokemon = document.getElementById('div-pokemon');
+    if (divPokemon) {
+        divPokemon.appendChild(buttonPreviousPage);
+    }
 
+    previousPage(buttonPreviousPage, () => renderPokemons());
 
     const buttonNextPage = document.createElement('button');
     buttonNextPage.innerHTML = `
     <button id="next-button">Next</button>
     `;
+    if (divPokemon) {
+        divPokemon.appendChild(buttonNextPage);
+    }
 
-    document.getElementById('div-pokemon')!.appendChild(buttonNextPage);
     nextPage(buttonNextPage, () => renderPokemons());
 
 }
@@ -32,8 +37,12 @@ export function showPokemonPaginationButtons (id : string) {
 
     document.getElementById('div-pokemon')?.appendChild(buttonPreviousPokemon);
 
-    previousPokemon(buttonPreviousPokemon, id, () => renderPokemon(buttonPreviousPokemon.getAttribute("data-id-pokemon")!));
-
+    previousPokemon(buttonPreviousPokemon, id, async () => {
+        const idOfPokemon = buttonPreviousPokemon.getAttribute("data-id-pokemon");
+        if (idOfPokemon) {
+            await renderPokemon(idOfPokemon);
+        }
+    });
 
     const buttonNextPokemon = document.createElement('button');
     buttonNextPokemon.innerHTML = `
@@ -42,5 +51,10 @@ export function showPokemonPaginationButtons (id : string) {
 
     document.getElementById('div-pokemon')?.appendChild(buttonNextPokemon);
 
-    nextPokemon(buttonNextPokemon, id, () => renderPokemon(buttonNextPokemon.getAttribute("data-id-pokemon")!));
+    nextPokemon(buttonNextPokemon, id, async () => {
+        const idOfPokemon = buttonNextPokemon.getAttribute("data-id-pokemon");
+        if (idOfPokemon) {
+            await renderPokemon(idOfPokemon);
+        }
+    });
 }

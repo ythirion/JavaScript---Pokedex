@@ -9,11 +9,13 @@ export async function showTypeCheckbox() {
     let checkboxTypes = "";
     let j = 1;
 
-    for (let type of tableOfTypes!) {
-        //API non mis à jour, aucun pokemon de type unknown ou stellar
-        if (type !== "stellar" && type !== "unknown")
-            checkboxTypes += `<input type='checkbox' name='types[]' class='${j}'>` + type + "</input>";
-        j++;
+    if (tableOfTypes) {
+        for (let type of tableOfTypes) {
+            //API non mis à jour, aucun pokemon de type unknown ou stellar
+            if (type !== "stellar" && type !== "unknown")
+                checkboxTypes += `<input type='checkbox' name='types[]' class='${j}'>` + type + "</input>";
+            j++;
+        }
     }
 
     return checkboxTypes;

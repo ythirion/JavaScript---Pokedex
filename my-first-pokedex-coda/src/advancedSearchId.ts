@@ -14,7 +14,9 @@ export async function buttonSearchId () {
             showPokemonCorrespondingToId(searchIdValue);
         } else {
             const errorMessage = document.getElementById("message-error-id");
-            errorMessage!.innerHTML = "The id should be between 1 and 1025 or 10001 and 10325.";
+            if (errorMessage) {
+                errorMessage.innerHTML = "The id should be between 1 and 1025 or 10001 and 10325.";
+            }
         }
     })
 }
@@ -26,13 +28,15 @@ async function showPokemonCorrespondingToId(id: string) {
 
     const div = document.getElementById('div-pokemon')
 
-    div!.innerHTML = "";
+    if (div) {
+        div.innerHTML = "";
 
-    const item = `
+        const item = `
                 <pokemon-card id="${pokemonInformations?.id}" 
                               name="${pokemonInformations?.name}" 
                               img="${imgPokemonFromInterface(pokemonInformations)}">
                 </pokemon-card>`;
 
-    div!.innerHTML += item;
+        div.innerHTML += item;
+    }
 }
