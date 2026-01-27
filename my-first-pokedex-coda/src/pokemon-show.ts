@@ -35,20 +35,9 @@ export async function renderPokemon(id: string) {
     }
 
     showPokemonPaginationButtons(id);
-
-    const linkToPokemonOfEvolutionChain = document.getElementsByClassName('pokemon-of-evolution-chain');
-    for (let element of linkToPokemonOfEvolutionChain) {
-        if (element.getAttribute('id')) {
-            const idPokemon = await getIdOfPokemonFromName(element.getAttribute('id')!);
-            const idPokemonToString = idPokemon?.toString();
-            element.addEventListener("click", (event) => {
-                event.stopPropagation();
-                renderPokemon(idPokemonToString!);
-            });
-        }
-    }
 }
 
+// construct a table of informations for the evolution chain (previous pokemon / pokemon)
 export async function evolutionData(pokemonEvolutions: Evolution[], previousPokemon : string) : Promise<ElementOfEvolution[]> {
     let table : ElementOfEvolution[] = []
     for (const pokemon of pokemonEvolutions) {
@@ -69,6 +58,40 @@ export async function evolutionData(pokemonEvolutions: Evolution[], previousPoke
     }
 
     return table;
+}
+
+// get information af the evolution chain to give at showPokemonEvolution function
+async function pokemonEvolution (pokemonInformations: Pokemon) {
+    const pokemonEvolutions = await getEvolution (pokemonInformations?.name!);
+
+    if (pokemonEvolutions?.chain?.evolves_to && pokemonEvolutions.chain.species?.url) {
+        const idOfFirstPokemon = getIdFromUrl(pokemonEvolutions.chain.species?.url);
+        if (idOfFirstPokemon) {
+            const nameOfFirstPokemon = await getNameOfPokemonFromId(idOfFirstPokemon);
+
+            if (nameOfFirstPokemon) {
+                const firstPokemon : ElementOfEvolution = {namePokemon: nameOfFirstPokemon, namePreviousPokemon: ""};
+                const tableOfEvolution = await evolutionData(pokemonEvolutions.chain.evolves_to, firstPokemon.namePokemon);
+                tableOfEvolution.unshift(firstPokemon);
+
+                const evolutionContainer = document.getElementById('pokemon-evolutions');
+
+                const pokemonId = await getIdOfPokemonFromName(firstPokemon.namePokemon);
+                const imgUrl = imgPokemonFromId(pokemonId!);
+
+                let text = await showPokemonEvolution(firstPokemon, imgUrl, tableOfEvolution);
+
+                if (evolutionContainer) {
+                    evolutionContainer.innerHTML += text;
+                }
+
+                await linkToPokemonOfEvolutionChain()
+            }
+        }
+
+
+
+    }
 }
 
 async function showPokemonEvolution (firstPokemon: ElementOfEvolution, imgUrl: string, tableOfEvolution: ElementOfEvolution[]) : Promise<string> {
@@ -103,23 +126,17 @@ async function showPokemonEvolution (firstPokemon: ElementOfEvolution, imgUrl: s
     return text;
 }
 
-async function pokemonEvolution (pokemonInformations: Pokemon) {
-    const pokemonEvolutions = await getEvolution (pokemonInformations?.name!);
-
-    if (pokemonEvolutions?.chain?.evolves_to && pokemonEvolutions.chain.species?.name) {
-        const firstPokemon : ElementOfEvolution = {namePokemon: pokemonEvolutions.chain.species?.name, namePreviousPokemon: ""};
-        const tableOfEvolution = await evolutionData(pokemonEvolutions.chain.evolves_to, firstPokemon.namePokemon);
-        tableOfEvolution.unshift(firstPokemon);
-
-        const evolutionContainer = document.getElementById('pokemon-evolutions');
-
-        const pokemonId = await getIdOfPokemonFromName(firstPokemon.namePokemon);
-        const imgUrl = imgPokemonFromId(pokemonId!);
-
-        let text = await showPokemonEvolution(firstPokemon, imgUrl, tableOfEvolution);
-
-        if (evolutionContainer) {
-            evolutionContainer.innerHTML += text;
+// add link to pokemon clicked in the evolution chain
+async function linkToPokemonOfEvolutionChain() {
+    const linkToPokemonOfEvolutionChain = document.getElementsByClassName('pokemon-of-evolution-chain');
+    for (let element of linkToPokemonOfEvolutionChain) {
+        if (element.getAttribute('id')) {
+            const idPokemon = await getIdOfPokemonFromName(element.getAttribute('id')!);
+            const idPokemonToString = idPokemon?.toString();
+            element.addEventListener("click", (event) => {
+                event.stopPropagation();
+                renderPokemon(idPokemonToString!);
+            });
         }
     }
 }

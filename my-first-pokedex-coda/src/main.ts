@@ -2,7 +2,7 @@ import './style.css'
 import './header.ts'
 import {renderPokemons} from "./list-show.ts";
 import {search} from "./search.ts";
-import {advancedSearch} from "./advancedSearch.ts";
+import {showAdvancedSearch} from "./advancedSearch.ts";
 
 
 const app = document.getElementById('app')!;
@@ -15,4 +15,4 @@ renderPokemons();
 
 search();
 
-advancedSearch();
+showAdvancedSearch();

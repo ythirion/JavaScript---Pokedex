@@ -1,6 +1,7 @@
 import {getGenerations, getOnePokemonFromAPI, getPokemonIdFromGen} from "./api.ts";
 import {imgPokemonFromInterface} from "./get-img.ts";
 
+// show a checkbox for every generation of the API
 export async function showGenerationCheckbox() {
     const tableOfGeneration = await getGenerations();
 
@@ -15,6 +16,7 @@ export async function showGenerationCheckbox() {
     return checkboxGeneration;
 }
 
+// proceed the advanced search by generation when button clicked
 export async function buttonSearchGeneration() {
     const btnGeneration = document.getElementById('btnSearchGen');
     btnGeneration?.addEventListener('click', async () => {
@@ -38,14 +40,14 @@ export async function buttonSearchGeneration() {
 
             for (let gen of tableOfGen) {
                 if (div && gen) {
-                    await getPokemonFromGen(gen, div);
+                    await showPokemonFromGen(gen, div);
                 }
             }
         }
     })
 }
 
-async function getPokemonFromGen (gen:string, div:HTMLElement) {
+async function showPokemonFromGen (gen:string, div:HTMLElement) {
     const tableOfPokemonsId = await getPokemonIdFromGen(gen);
 
     const tableOfPokemonInfos = [];

@@ -1,6 +1,7 @@
 import {getOnePokemonFromAPI, getPokemonIdFromType, getTypes} from "./api.ts";
 import {imgPokemonFromInterface} from "./get-img.ts";
 
+// show a checkbox for every type of the API
 export async function showTypeCheckbox() {
     const tableOfTypes = await getTypes();
 
@@ -17,6 +18,7 @@ export async function showTypeCheckbox() {
     return checkboxTypes;
 }
 
+// proceed the advanced search by type when button clicked
 export async function buttonSearchType() {
     const btnType = document.getElementById('btnSearchTypes');
     btnType?.addEventListener('click', async () => {
@@ -48,6 +50,7 @@ export async function buttonSearchType() {
     })
 }
 
+// get each pokemon of type checked. If multiple type checked, only pokemon of multi types corresponding
 async function getPokemonsFromType (tableOfTypes: string[]) {
     const tableOfPokemonsId = [];
 

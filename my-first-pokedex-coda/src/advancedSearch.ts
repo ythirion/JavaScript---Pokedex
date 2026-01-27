@@ -2,8 +2,8 @@ import {showTypeCheckbox, buttonSearchType} from "./advancedSearchType.ts";
 import {showGenerationCheckbox, buttonSearchGeneration} from "./advancedSearchGeneration.ts";
 import {buttonSearchId} from "./advancedSearchId.ts";
 
-
-export async function advancedSearch() {
+// show advanced search page (by id / by type / by abilities / by generation
+export async function showAdvancedSearch() {
 
     let checkboxTypes = await showTypeCheckbox();
     let checkboxGeneration = await showGenerationCheckbox();

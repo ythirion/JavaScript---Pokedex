@@ -19,6 +19,7 @@ export async function getOnePokemonFromAPI(id: string): Promise<Pokemon | null> 
     }
 }
 
+// get all pokemons from API with pagination
 export async function getPokemonsFromAPI (limit: number = 20,
                                    offset: number = 0 )
     : Promise<Pokemon[] | null> {

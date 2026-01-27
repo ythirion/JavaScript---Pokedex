@@ -1,7 +1,7 @@
 import {getOnePokemonFromAPI} from "./api.ts";
 import {imgPokemonFromInterface} from "./get-img.ts";
-import {renderPokemon} from "./pokemon-show.ts";
 
+// proceed the advanced search by id when button clicked
 export async function buttonSearchId () {
     const btnSearchId = document.getElementById('btnSearchId');
     btnSearchId?.addEventListener('click', () => {
@@ -11,7 +11,7 @@ export async function buttonSearchId () {
         const searchIdValueToInt = parseInt(searchIdValue);
         if ((searchIdValueToInt > 0 && searchIdValueToInt < 1026) ||
             (searchIdValueToInt > 10000 && searchIdValueToInt < 10326)) {
-            getPokemonCorrespondingToId(searchIdValue);
+            showPokemonCorrespondingToId(searchIdValue);
         } else {
             const errorMessage = document.getElementById("message-error-id");
             errorMessage!.innerHTML = "The id should be between 1 and 1025 or 10001 and 10325.";
@@ -20,7 +20,7 @@ export async function buttonSearchId () {
 }
 
 
-async function getPokemonCorrespondingToId(id: string) {
+async function showPokemonCorrespondingToId(id: string) {
 
     const pokemonInformations = await getOnePokemonFromAPI(id);
 
@@ -29,18 +29,10 @@ async function getPokemonCorrespondingToId(id: string) {
     div!.innerHTML = "";
 
     const item = `
-        <div class="pokemon-card" data-id-pokemon="${pokemonInformations?.id}">
-             <h3>#${pokemonInformations?.id} ${pokemonInformations?.name}</h3>
-             <img src=${imgPokemonFromInterface(pokemonInformations)} alt="Image de ${pokemonInformations?.name}" height="100"> 
-         </div>
-    `;
+                <pokemon-card id="${pokemonInformations?.id}" 
+                              name="${pokemonInformations?.name}" 
+                              img="${imgPokemonFromInterface(pokemonInformations)}">
+                </pokemon-card>`;
 
     div!.innerHTML += item;
-
-    const divs = document.querySelectorAll('[data-id-pokemon]');
-    for (const div of divs) {
-        div.addEventListener('click', () => {
-            renderPokemon(div.getAttribute('data-id-pokemon')!);
-        })
-    }
 }
