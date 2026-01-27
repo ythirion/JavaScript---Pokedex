@@ -43,3 +43,25 @@
     border-radius: 8px;
     height: 100%;
 }
+
+.loader-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 50px 0;
+}
+
+.pokeball-loader {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 15px;
+    /* Optionnel : petite animation de flottement */
+    animation: float 2s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}

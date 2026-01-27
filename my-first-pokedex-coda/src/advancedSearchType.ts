@@ -1,5 +1,6 @@
 import {getOnePokemonFromAPI, getPokemonIdFromType, getTypes} from "./api.ts";
 import {imgPokemonFromInterface} from "./get-img.ts";
+import "./loader.ts"
 
 // show a checkbox for every type of the API
 export async function showTypeCheckbox() {
@@ -23,29 +24,37 @@ export async function buttonSearchType() {
     const btnType = document.getElementById('btnSearchTypes');
     btnType?.addEventListener('click', async () => {
         const typeCheck = document.querySelectorAll("[name = 'types[]']:checked");
+        let div = document.getElementById('div-pokemon');
         if (typeCheck.length == 0) {
-            const p = document.getElementById('no-check-box-type');
-            if (p) {
-                p.innerHTML = "You should select at least one type."
+            const errorMessage = document.getElementById('no-check-box-type');
+            if (errorMessage) {
+                errorMessage.innerHTML = "You should select at least one type."
+                return;
             }
-        } else {
-            const tableOfTypes = []
-            for (let element of typeCheck) {
-                let id = element.getAttribute('class');
-                if (id) {
-                    tableOfTypes.push(id);
-                }
+        }
 
+        if(div) {
+            div.innerHTML = `<pokeball-loader></pokeball-loader>`;
+        }
+
+        const tableOfTypes = []
+        for (let element of typeCheck) {
+            let id = element.getAttribute('class');
+            if (id) {
+                tableOfTypes.push(id);
             }
 
-            let div = document.getElementById('div-pokemon');
-            if(div) {
-                div.innerHTML = "";
-            }
+        }
 
-            if (tableOfTypes && div) {
-                showPokemonFromType(tableOfTypes, div);
-            }
+        let allPokemonHTML = "";
+
+        if (tableOfTypes && div) {
+            const typeHTML = await showPokemonFromType(tableOfTypes);
+            allPokemonHTML += typeHTML;
+        }
+
+        if (div) {
+            div.innerHTML = allPokemonHTML;
         }
     })
 }
@@ -85,14 +94,13 @@ async function getPokemonsFromType (tableOfTypes: string[]) {
     return tableOfResult;
 }
 
-async function showPokemonFromType (tableOfType: string[], div: HTMLElement) {
+async function showPokemonFromType (tableOfType: string[]) {
     const tableOfPokemonsId = await getPokemonsFromType(tableOfType);
 
     const tableOfPokemonInfos = [];
 
     if (tableOfPokemonsId.length == 0) {
-        div.innerHTML = "Oops! No pokemon match to your search.";
-        return;
+        return "Oops! No pokemon match to your search.";
     }
 
     if (tableOfPokemonsId) {
@@ -106,5 +114,5 @@ async function showPokemonFromType (tableOfType: string[], div: HTMLElement) {
                     </pokemon-card>`);
         }
     }
-    div.innerHTML += tableOfPokemonInfos.join('');
+    return tableOfPokemonInfos.join('');
 }

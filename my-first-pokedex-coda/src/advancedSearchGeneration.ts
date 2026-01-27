@@ -1,5 +1,6 @@
 import {getGenerations, getOnePokemonFromAPI, getPokemonIdFromGen} from "./api.ts";
 import {imgPokemonFromInterface} from "./get-img.ts";
+import "./loader.ts"
 
 // show a checkbox for every generation of the API
 export async function showGenerationCheckbox() {
@@ -21,33 +22,41 @@ export async function buttonSearchGeneration() {
     const btnGeneration = document.getElementById('btnSearchGen');
     btnGeneration?.addEventListener('click', async () => {
         const genCheck = document.querySelectorAll("[name = 'gen[]']:checked");
+        let div = document.getElementById('div-pokemon');
         if (genCheck.length == 0) {
-            const p = document.getElementById('no-check-box-gen');
-            if (p) {
-                p.innerHTML = "You should select at least one generation."
+            const errorMessage = document.getElementById('no-check-box-gen');
+            if (errorMessage) {
+                errorMessage.innerHTML = "You should select at least one generation."
+                return;
             }
-        } else {
-            const tableOfGen = []
-            for (let element of genCheck) {
-                let id = element.getAttribute('id');
-                tableOfGen.push(id);
-            }
+        }
 
-            let div = document.getElementById('div-pokemon');
-            if(div) {
-                div.innerHTML = "";
-            }
+        if (div) {
+            div.innerHTML = `<pokeball-loader></pokeball-loader>`;
+        }
 
-            for (let gen of tableOfGen) {
-                if (div && gen) {
-                    await showPokemonFromGen(gen, div);
-                }
+        const tableOfGen = []
+        for (let element of genCheck) {
+            let id = element.getAttribute('id');
+            tableOfGen.push(id);
+        }
+
+        let allPokemonHTML = "";
+
+        for (let gen of tableOfGen) {
+            if (gen) {
+                const genHTML = await showPokemonFromGen(gen);
+                allPokemonHTML += genHTML;
             }
+        }
+
+        if (div) {
+            div.innerHTML = allPokemonHTML;
         }
     })
 }
 
-async function showPokemonFromGen (gen:string, div:HTMLElement) {
+async function showPokemonFromGen (gen:string) {
     const tableOfPokemonsId = await getPokemonIdFromGen(gen);
 
     const tableOfPokemonInfos = [];
@@ -64,5 +73,5 @@ async function showPokemonFromGen (gen:string, div:HTMLElement) {
         }
     }
 
-    div.innerHTML += tableOfPokemonInfos.join('');
+    return tableOfPokemonInfos.join('');
 }
