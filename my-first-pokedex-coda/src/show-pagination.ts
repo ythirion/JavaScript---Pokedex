@@ -5,24 +5,18 @@ import {renderPokemon} from "./pokemon-show.ts";
 export function showPaginationButtons () {
 
     const buttonPreviousPage = document.createElement('button');
-    buttonPreviousPage.innerHTML = `
-    <button id="previous-button">Previous</button>
-    `;
+    buttonPreviousPage.id = "previous-button";
+    buttonPreviousPage.textContent = "Previous Page";
 
-    const divPokemon = document.getElementById('div-pokemon');
-    if (divPokemon) {
-        divPokemon.appendChild(buttonPreviousPage);
-    }
+    document.getElementById('div-pokemon')?.appendChild(buttonPreviousPage);
 
     previousPage(buttonPreviousPage, () => renderPokemons());
 
     const buttonNextPage = document.createElement('button');
-    buttonNextPage.innerHTML = `
-    <button id="next-button">Next</button>
-    `;
-    if (divPokemon) {
-        divPokemon.appendChild(buttonNextPage);
-    }
+    buttonNextPage.id = "next-button";
+    buttonNextPage.textContent = "Next Page";
+
+    document.getElementById('div-pokemon')?.appendChild(buttonNextPage);
 
     nextPage(buttonNextPage, () => renderPokemons());
 
@@ -31,9 +25,8 @@ export function showPaginationButtons () {
 export function showPokemonPaginationButtons (id : string) {
 
     const buttonPreviousPokemon = document.createElement('button');
-    buttonPreviousPokemon.innerHTML = `
-    <button id="previous-pokemon">Previous Pokemon</button>
-    `;
+    buttonPreviousPokemon.id = "previous-button";
+    buttonPreviousPokemon.textContent = "Previous Pokemon";
 
     document.getElementById('div-pokemon')?.appendChild(buttonPreviousPokemon);
 
@@ -45,9 +38,9 @@ export function showPokemonPaginationButtons (id : string) {
     });
 
     const buttonNextPokemon = document.createElement('button');
-    buttonNextPokemon.innerHTML = `
-    <button id="next-button">Next Pokemon</button>
-    `;
+    buttonNextPokemon.id = "next-button";
+    buttonNextPokemon.textContent = "Next Pokemon";
+
 
     document.getElementById('div-pokemon')?.appendChild(buttonNextPokemon);
 

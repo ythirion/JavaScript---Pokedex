@@ -13,13 +13,14 @@ class PokemonCard extends HTMLElement {
         this.innerHTML = `<div class="pokemon-card" data-id-pokemon="${id}">
              <h3>#${id} ${name}</h3>
              <img src=${img} alt="Image de ${name}" 
-             height="100" onerror="this.src='src/img/favicon.png'; this.onerror=null;"> 
+                height="100" onerror="this.src='src/img/favicon.png'; this.onerror=null;"
+             > 
              </div>`
 
         this.addEventListener(
-            'click', () => {
+            'click', async () => {
                 if(id){
-                    renderPokemon(id);
+                    await renderPokemon(id);
                 }
             }
         );

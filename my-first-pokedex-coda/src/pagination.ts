@@ -3,8 +3,6 @@ const limit = 20;
 const totalPokemon = 1350;
 
 export function previousPage(element: HTMLElement, callback:() => void) {
-
-
     const setPrevious = () => {
         offset -= limit;
         if (offset < 0) {
@@ -16,7 +14,6 @@ export function previousPage(element: HTMLElement, callback:() => void) {
 }
 
 export function nextPage(element: HTMLElement, callback:() => void) {
-
     const setNext = () => {
         offset += limit;
         if (offset >= totalPokemon) {
@@ -47,7 +44,6 @@ export function previousPokemon (element: HTMLElement, id: string, callback:() =
 }
 
 export function nextPokemon(element: HTMLElement, id: string, callback:() => void) {
-
     const setNext = () => {
         let idInt = parseInt(id);
         idInt += 1;

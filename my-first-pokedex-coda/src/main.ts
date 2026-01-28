@@ -3,20 +3,18 @@ import './header.ts'
 import {renderPokemons} from "./list-show.ts";
 import {search} from "./search.ts";
 import {showAdvancedSearch} from "./advancedSearch.ts";
+import {showTeam} from "./team.ts";
 
-
-const app = document.getElementById('app');
 
 const pokemonListContainer = document.createElement('div');
 pokemonListContainer.id = 'div-pokemon';
 
+const app = document.getElementById('app');
 if (app) {
     app.appendChild(pokemonListContainer);
 }
 
-
-renderPokemons();
-
-search();
-
-showAdvancedSearch();
+await renderPokemons();
+await search();
+await showAdvancedSearch();
+showTeam();

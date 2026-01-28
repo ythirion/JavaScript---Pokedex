@@ -10,11 +10,13 @@ interface Result {
 export interface Pokemon {
     id: number;
     name: string;
-    stats: PokemonStat[];
+    species: {
+        url: string;
+    };
     cries: {
         latest: string;
         legacy: string;
-    }
+    };
     sprites: {
         front_default: string;
         other: {
@@ -26,38 +28,36 @@ export interface Pokemon {
             }
         }
     };
+    stats: PokemonStat[];
     types: PokemonType[];
     abilities: PokemonAbilitie[];
-    species: {
-        url: string;
-    }
 }
 
 interface PokemonStat {
     base_stat: number;
     stat: {
         name: string;
-    }
-}
-
-interface PokemonAbilitie {
-    ability: {
-        name: string;
-        url: string;
-    }
+    };
 }
 
 interface PokemonType {
     type: {
         name: string;
         url: string;
-    }
+    };
+}
+
+interface PokemonAbilitie {
+    ability: {
+        name: string;
+        url: string;
+    };
 }
 
 export interface EvolutionChain {
     evolution_chain?: {
         url?: string;
-    }
+    };
 }
 
 export interface Evolutions {
@@ -65,11 +65,11 @@ export interface Evolutions {
 }
 
 export interface Evolution {
-        species?: {
-            name?: string;
-            url?: string;
-        }
-        evolves_to?: Evolution[];
+    species?: {
+        name?: string;
+        url?: string;
+    };
+    evolves_to?: Evolution[];
 }
 
 export interface ElementOfEvolution {
@@ -89,5 +89,5 @@ interface PokemonOfType {
     pokemon : {
         name : string;
         url : string;
-    }
+    };
 }

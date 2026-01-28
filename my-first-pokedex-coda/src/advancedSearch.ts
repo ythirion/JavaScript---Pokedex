@@ -10,13 +10,13 @@ export async function showAdvancedSearch() {
 
     const advancedSearchButton = document.getElementById('advancedSearch');
 
-    advancedSearchButton?.addEventListener('click', () => {
-        const page = document.getElementById('div-pokemon');
+    advancedSearchButton?.addEventListener('click', async () => {
+        const pageContainer = document.getElementById('div-pokemon');
 
-        if (page) {
-            page.innerHTML = "";
+        if (pageContainer) {
+            pageContainer.innerHTML = "";
 
-            page.innerHTML += `
+            pageContainer.innerHTML += `
             <h2>Advanced Search</h2>
             <h3>Id Pokemon</h3>
             <label for="id">Id</label>
@@ -36,9 +36,9 @@ export async function showAdvancedSearch() {
             <p id="no-check-box-gen"></p>
             `
         }
-        buttonSearchId ();
-        buttonSearchType();
-        buttonSearchGeneration();
+        await buttonSearchId ();
+        await buttonSearchType();
+        await buttonSearchGeneration();
 
     })
 }

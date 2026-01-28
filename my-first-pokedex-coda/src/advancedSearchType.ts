@@ -24,6 +24,7 @@ export async function showTypeCheckbox() {
 // proceed the advanced search by type when button clicked
 export async function buttonSearchType() {
     const btnType = document.getElementById('btnSearchTypes');
+
     btnType?.addEventListener('click', async () => {
         const typeCheck = document.querySelectorAll("[name = 'types[]']:checked");
         let div = document.getElementById('div-pokemon');

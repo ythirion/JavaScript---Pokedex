@@ -14,15 +14,14 @@ export async function renderPokemons () {
     if (pokemonContainer) {
         pokemonContainer.innerHTML = "";
 
-        pokemonsInformations?.map((pokemon) => {
+        pokemonsInformations?.map( pokemon => {
             pokemonContainer.innerHTML += `
-        <pokemon-card id="${pokemon.id}" 
-                      name="${pokemon.name}" 
-                      img="${imgPokemonFromInterface(pokemon)}">
-        </pokemon-card>`
-        });
+                <pokemon-card id="${pokemon.id}" 
+                              name="${pokemon.name}" 
+                              img="${imgPokemonFromInterface(pokemon)}">
+                </pokemon-card>`
+                });
     }
-
 
     showPaginationButtons ()
 }

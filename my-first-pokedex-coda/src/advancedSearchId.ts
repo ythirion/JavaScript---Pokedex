@@ -4,6 +4,7 @@ import {imgPokemonFromInterface} from "./get-img.ts";
 // proceed the advanced search by id when button clicked
 export async function buttonSearchId () {
     const btnSearchId = document.getElementById('btnSearchId');
+
     btnSearchId?.addEventListener('click', () => {
         const searchId = document.getElementById('id') as HTMLInputElement;
         const searchIdValue = searchId.value;
