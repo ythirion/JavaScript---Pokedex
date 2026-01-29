@@ -2,6 +2,7 @@ import {getOnePokemonFromAPI} from "./api.ts";
 import {imgPokemonFromInterface} from "./get-img.ts";
 import {comparePokemonFromAll} from "./search.ts";
 import type {TeamOfPokemon, Pokemon} from "./model.ts"
+import "./pokemon-team.ts"
 
 const teamOfPokemon : TeamOfPokemon = {};
 
@@ -21,13 +22,12 @@ export function showTeam() {
                     const type = teamOfPokemon[numberOfPokemon as keyof TeamOfPokemon]?.types.map(pokemonType =>
                         `<img src="src/img/${pokemonType.type.name}.png" alt="${pokemonType.type.name}">`).join(" ");
 
-                    page.innerHTML += `
-                        <div class="pokemon-card" id="${teamOfPokemon[numberOfPokemon as keyof TeamOfPokemon]?.id}">
-                            <p>${teamOfPokemon[numberOfPokemon as keyof TeamOfPokemon]?.name}</p>
-                            <img src="${imgPokemonFromInterface(teamOfPokemon[numberOfPokemon as keyof TeamOfPokemon]!)}" 
-                                alt="img of pokemon" height="100">
-                            <p>${type}</p>
-                        </div>`
+                    page.innerHTML += `<pokemon-team id="${teamOfPokemon[numberOfPokemon as keyof TeamOfPokemon]?.id}"
+                                        name="${teamOfPokemon[numberOfPokemon as keyof TeamOfPokemon]?.name}"
+                                        img="${imgPokemonFromInterface(teamOfPokemon[numberOfPokemon as keyof TeamOfPokemon]!)}"
+                                        i="${i}">
+                                            ${type}
+                                        </pokemon-team>`
                 } else {
                     page.innerHTML += `
                     <div class="team">
@@ -40,11 +40,27 @@ export function showTeam() {
 
             }
 
+            let teamName = ``;
+
+            for (let i = 1; i < 11; i++ ) {
+                teamName += `<h4 id="team-${i}">Team ${i}</h4>
+                            <button type="button" id="change-team-${i}" data-change="${i}">Change team</button>`;
+            }
+
+            page.innerHTML += `<button type="button" id="save-local-storage">Sauvegarder mon équipe dans le localStorage</button>
+                              <p id="error-message-storage"></p>
+                              <h3>Mes équipes enregistrées</h3>
+                              <div id="team-local-storage">
+                              ${teamName}
+                              </div>`;
+
             const btnToChoose = document.querySelectorAll("[data-pokemon-id]");
             await openSearchToChoosePokemonForTeam(btnToChoose);
+            saveTeamIntoLocalStorage();
+            showTeamIntoLocalStorage();
         }
     })
-}
+}0
 
 async function openSearchToChoosePokemonForTeam(btnToChoose: NodeListOf<Element>) {
 
@@ -139,4 +155,64 @@ async function getPokemonCorrespondingToSearchForTeam(searchValue: string, eleme
             })
         }
     }
+}
+
+function saveTeamIntoLocalStorage() {
+    const btnSave = document.getElementById('save-local-storage');
+
+    btnSave?.addEventListener('click', async () => {
+        const iStorage = localStorage.getItem("iStorage");
+        if (iStorage) {
+            let iStorageToNb = parseInt(iStorage);
+
+            if (iStorageToNb === 11) {
+                const errorMessage = document.getElementById('error-message-storage');
+                if (errorMessage) {
+                    errorMessage.innerHTML = "You can't have more than 10 teams.";
+                }
+            } else {
+                localStorage.setItem(`team-${iStorage}`, JSON.stringify(teamOfPokemon));
+                ++iStorageToNb;
+                localStorage.setItem(`iStorage`, `${iStorageToNb}`);
+                const btnTeam = document.getElementById('teamBtn');
+                btnTeam?.click();
+            }
+        }
+    })
+}
+
+function showTeamIntoLocalStorage() {
+
+    for (let i = 1; i < 11; i++) {
+        if (localStorage.getItem(`team-${i}`)) {
+            let teamConstainer = document.getElementById(`team-${i}`);
+            let pokemons: TeamOfPokemon = JSON.parse(localStorage.getItem(`team-${i}`)!);
+
+            Object.values(pokemons).forEach((pokemon: Pokemon) => {
+                const type = pokemon?.types.map(pokemonType =>
+                    `<img src="src/img/${pokemonType.type.name}.png" alt="${pokemonType.type.name}">`).join(" ");
+                if (teamConstainer) {
+                    teamConstainer.innerHTML += `
+                        <div class="pokemon-card">
+                        <p>${pokemon.name}</p>
+                        <img src="${imgPokemonFromInterface(pokemon)}" alt="img of pokemon" height="100">
+                        <p>${type}</p>
+                        </div>`
+                }
+            })
+        } else {
+            const btnChangeTeam = document.getElementById(`change-team-${i}`);
+            btnChangeTeam?.setAttribute('hidden', 'hidden');
+        }
+    }
+}
+
+function changeTeamOfLocalStorage() {
+ let btnChangeTeam = document.querySelectorAll('[data-change]');
+
+ for (const element of btnChangeTeam) {
+     element?.addEventListener('click', () => {
+
+     } );
+ }
 }
