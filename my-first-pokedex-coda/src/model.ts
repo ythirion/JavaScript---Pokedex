@@ -82,12 +82,21 @@ export interface Generations {
 }
 
 export interface Type {
-    pokemon : PokemonOfType[];
+    pokemon: PokemonOfType[];
 }
 
 interface PokemonOfType {
-    pokemon : {
-        name : string;
-        url : string;
+    pokemon: {
+        name: string;
+        url: string;
     };
+}
+
+export interface TeamOfPokemon {
+    pokemon_1?: Pokemon;
+    pokemon_2?: Pokemon;
+    pokemon_3?: Pokemon;
+    pokemon_4?: Pokemon;
+    pokemon_5?: Pokemon;
+    pokemon_6?: Pokemon;
 }

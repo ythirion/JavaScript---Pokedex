@@ -44,7 +44,7 @@ async function getPokemonCorrespondingToSearch(searchValue: string) {
     }
 }
 
-async function comparePokemonFromAll(searchValue: string) {
+export async function comparePokemonFromAll(searchValue: string) {
     const arrayOfPokemons = await getNameOfAllPokemons();
 
     if (searchValue && arrayOfPokemons) {
