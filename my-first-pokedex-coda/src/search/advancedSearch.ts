@@ -9,14 +9,15 @@ export async function showAdvancedSearch() {
     let checkboxGeneration = await showGenerationCheckbox();
 
     const advancedSearchButton = document.getElementById('advancedSearch');
+    if (!advancedSearchButton) return;
 
-    advancedSearchButton?.addEventListener('click', async () => {
+    advancedSearchButton.addEventListener('click', async () => {
         const pageContainer = document.getElementById('div-pokemon');
+        if (!pageContainer) return;
 
-        if (pageContainer) {
-            pageContainer.innerHTML = "";
+        pageContainer.innerHTML = "";
 
-            pageContainer.innerHTML += `
+        pageContainer.innerHTML += `
             <h2>Advanced Search</h2>
             <h3>Id Pokemon</h3>
             <label for="id">Id</label>
@@ -35,10 +36,9 @@ export async function showAdvancedSearch() {
             <input type="button" value="Search" id="btnSearchGen">
             <p id="no-check-box-gen"></p>
             `
-        }
-        await buttonSearchId ();
+
+        await buttonSearchId();
         await buttonSearchType();
         await buttonSearchGeneration();
-
     })
 }

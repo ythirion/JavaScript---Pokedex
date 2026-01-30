@@ -10,9 +10,10 @@ export async function getOnePokemonFromAPI(name: string): Promise<Pokemon | null
         if (!responseOnePokemon.ok) {
             throw new Error(responseOnePokemon.statusText);
         }
-        const onePokemon = await responseOnePokemon.json() as Pokemon;
 
+        const onePokemon = await responseOnePokemon.json() as Pokemon;
         return onePokemon;
+
     } catch (error) {
         console.error(error);
         return null;
@@ -31,8 +32,8 @@ export async function getPokemonsFromAPI(limit: number = 20,
         if (!response.ok) {
             throw new Error(response.statusText);
         }
-        const data = await response.json() as ResultAPI;
 
+        const data = await response.json() as ResultAPI;
 
         const tableOfPokemonsName = [];
 
@@ -54,14 +55,13 @@ export async function getPokemonsFromAPI(limit: number = 20,
 }
 
 // get information of the species of a pokemon (especially the url of the evolution chain)
-async function getEvolutionChain(id: string) : Promise<EvolutionChain | null> {
+async function getEvolutionChain(id: string): Promise<EvolutionChain | null> {
     const data = await getOnePokemonFromAPI(id);
     if (!data) {
         return null;
     }
 
     const urlAPIEvolutionChain = data.species.url;
-
 
     try {
         const responseOnePokemon = await fetch(urlAPIEvolutionChain);
@@ -70,7 +70,6 @@ async function getEvolutionChain(id: string) : Promise<EvolutionChain | null> {
             throw new Error(responseOnePokemon.statusText);
         }
         const EvolutionChainPokemon = await responseOnePokemon.json() as EvolutionChain;
-
         return EvolutionChainPokemon;
 
     } catch (error) {
@@ -80,15 +79,11 @@ async function getEvolutionChain(id: string) : Promise<EvolutionChain | null> {
 }
 
 // get the informations of the evolution chain of a pokemon
-export async function getEvolution(id: string) : Promise<Evolutions | null> {
+export async function getEvolution(id: string): Promise<Evolutions | null> {
     const data = await getEvolutionChain(id);
-
-    if (!data) {
-        return null;
-    }
+    if (!data) return null;
 
     const urlAPIEvolution = data.evolution_chain?.url
-
 
     try {
         const responseOnePokemon = await fetch(urlAPIEvolution!);
@@ -97,7 +92,6 @@ export async function getEvolution(id: string) : Promise<Evolutions | null> {
             throw new Error(responseOnePokemon.statusText);
         }
         const evolutionPokemon = await responseOnePokemon.json() as Evolutions;
-
         return evolutionPokemon;
 
     } catch (error) {
@@ -106,7 +100,7 @@ export async function getEvolution(id: string) : Promise<Evolutions | null> {
     }
 }
 
-export async function getNameOfAllPokemons() : Promise<string[] | null> {
+export async function getNameOfAllPokemons(): Promise<string[] | null> {
 
     const limit = 1350;
     const urlAPI = `https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=0`;
@@ -121,8 +115,8 @@ export async function getNameOfAllPokemons() : Promise<string[] | null> {
         const tableOfPokemons = [];
 
         for (let pokemon of data.results) {
-           const nameOfPokemon = pokemon.name;
-           tableOfPokemons.push(nameOfPokemon);
+            const nameOfPokemon = pokemon.name;
+            tableOfPokemons.push(nameOfPokemon);
         }
 
         return tableOfPokemons;
@@ -133,17 +127,19 @@ export async function getNameOfAllPokemons() : Promise<string[] | null> {
     }
 }
 
-export async function  getIdOfPokemonFromName(name: string) {
+export async function getIdOfPokemonFromName(name: string) {
     const pokemonInformations = await getOnePokemonFromAPI(name);
+    if (!pokemonInformations) return;
 
-    const idPokemon = pokemonInformations?.id;
-
+    const idPokemon = pokemonInformations.id;
     return idPokemon;
 }
 
 export async function getNameOfPokemonFromId(id: string) {
     const pokemonInformations = await getOnePokemonFromAPI(id);
-    const namePokemon = pokemonInformations?.name;
+    if (!pokemonInformations) return;
+
+    const namePokemon = pokemonInformations.name;
     return namePokemon;
 }
 
@@ -172,7 +168,7 @@ export async function getTypes() {
     }
 }
 
-export async function getPokemonIdFromType(type: string) : Promise<string[] | null> {
+export async function getPokemonIdFromType(type: string): Promise<string[] | null> {
     const urlAPI = `https://pokeapi.co/api/v2/type/${type}/`;
 
     try {
@@ -187,9 +183,9 @@ export async function getPokemonIdFromType(type: string) : Promise<string[] | nu
         for (let pokemon of data.pokemon) {
             const urlOfPokemon = pokemon.pokemon.url;
             const idOfPokemon = getIdFromUrl(urlOfPokemon);
-            if (idOfPokemon) {
-                tableOfPokemonId.push(idOfPokemon);
-            }
+            if (!idOfPokemon) return null;
+
+            tableOfPokemonId.push(idOfPokemon);
         }
 
         return tableOfPokemonId;
@@ -225,7 +221,7 @@ export async function getGenerations() {
     }
 }
 
-export async function getPokemonIdFromGen(gen: string) : Promise<string[] | null> {
+export async function getPokemonIdFromGen(gen: string): Promise<string[] | null> {
     const urlAPI = `https://pokeapi.co/api/v2/generation/${gen}/`;
 
     try {
@@ -240,9 +236,9 @@ export async function getPokemonIdFromGen(gen: string) : Promise<string[] | null
         for (let pokemon of data.pokemon_species) {
             const urlOfPokemon = pokemon.url;
             const idOfPokemon = getIdFromUrl(urlOfPokemon);
-            if (idOfPokemon) {
-                tableOfPokemonId.push(idOfPokemon);
-            }
+            if (!idOfPokemon) return null;
+
+            tableOfPokemonId.push(idOfPokemon);
         }
 
         return tableOfPokemonId;

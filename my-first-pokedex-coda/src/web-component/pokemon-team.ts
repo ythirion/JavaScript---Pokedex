@@ -2,7 +2,6 @@ class PokemonTeam extends HTMLElement {
     constructor() {
         super();
         this.attachShadow({ mode: 'open' })
-
     }
 
     connectedCallback() {
@@ -13,11 +12,11 @@ class PokemonTeam extends HTMLElement {
 
         if (this.shadowRoot) {
             this.shadowRoot.innerHTML = `<div class="pokemon-card" id="${id}">
-                            <p>${name}</p>
-                            <img src="${img}" alt="img of pokemon" height="100">
-                            <slot></slot>
-                            <button type="button" data-pokemon-id="pokemon_${i}">Change pokemon</button>
-                        </div>`
+                <p>${name}</p>
+                <img src="${img}" alt="img of pokemon" height="100">
+                <slot></slot>
+                <button type="button" data-pokemon-id="pokemon_${i}">Change pokemon</button>
+            </div>`
         }
     }
 }

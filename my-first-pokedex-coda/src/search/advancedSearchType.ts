@@ -5,17 +5,17 @@ import "./loader.ts"
 // show a checkbox for every type of the API
 export async function showTypeCheckbox() {
     const tableOfTypes = await getTypes();
+    if (!tableOfTypes) return;
 
     let checkboxTypes = "";
     let j = 1;
 
-    if (tableOfTypes) {
-        for (let type of tableOfTypes) {
-            //API non mis à jour, aucun pokemon de type unknown ou stellar
-            if (type !== "stellar" && type !== "unknown")
-                checkboxTypes += `<input type='checkbox' name='types[]' class='${j}'>` + type + "</input>";
-            j++;
-        }
+
+    for (let type of tableOfTypes) {
+        //API non mis à jour, aucun pokemon de type unknown ou stellar
+        if (type !== "stellar" && type !== "unknown")
+            checkboxTypes += `<input type='checkbox' name='types[]' class='${j}'>` + type + "</input>";
+        j++;
     }
 
     return checkboxTypes;
@@ -24,41 +24,38 @@ export async function showTypeCheckbox() {
 // proceed the advanced search by type when button clicked
 export async function buttonSearchType() {
     const btnType = document.getElementById('btnSearchTypes');
+    if (!btnType) return;
 
-    btnType?.addEventListener('click', async () => {
+    btnType.addEventListener('click', async () => {
         const typeCheck = document.querySelectorAll("[name = 'types[]']:checked");
         let div = document.getElementById('div-pokemon');
+        if (!div) return;
+
         if (typeCheck.length === 0) {
             const errorMessage = document.getElementById('no-check-box-type');
-            if (errorMessage) {
-                errorMessage.innerHTML = "You should select at least one type."
-                return;
-            }
+            if (!errorMessage) return;
+            errorMessage.innerHTML = "You should select at least one type.";
+            return;
         }
 
-        if(div) {
-            div.innerHTML = `<pokeball-loader></pokeball-loader>`;
-        }
+        div.innerHTML = `<pokeball-loader></pokeball-loader>`;
 
-        const tableOfTypes = []
+        const tableOfTypes: string[] = []
+        if (!tableOfTypes) return;
+
         for (let element of typeCheck) {
             let id = element.getAttribute('class');
-            if (id) {
-                tableOfTypes.push(id);
-            }
+            if (!id) return;
 
+            tableOfTypes.push(id);
         }
 
         let allPokemonHTML = "";
 
-        if (tableOfTypes && div) {
-            const typeHTML = await showPokemonFromType(tableOfTypes);
-            allPokemonHTML += typeHTML;
-        }
+        const typeHTML = await showPokemonFromType(tableOfTypes);
+        allPokemonHTML += typeHTML;
 
-        if (div) {
-            div.innerHTML = allPokemonHTML;
-        }
+        div.innerHTML = allPokemonHTML;
     })
 }
 
@@ -68,9 +65,9 @@ async function getPokemonsFromType (tableOfTypes: string[]) {
 
     for (let type of tableOfTypes) {
         const response = await getPokemonIdFromType(type);
-        if (response) {
-            tableOfPokemonsId.push(response);
-        }
+        if (!response) return;
+
+        tableOfPokemonsId.push(response);
     }
 
     if (tableOfPokemonsId.length > 2) {
@@ -97,8 +94,9 @@ async function getPokemonsFromType (tableOfTypes: string[]) {
     return tableOfResult;
 }
 
-async function showPokemonFromType (tableOfType: string[]) {
+async function showPokemonFromType(tableOfType: string[]) {
     const tableOfPokemonsId = await getPokemonsFromType(tableOfType);
+    if (!tableOfPokemonsId) return;
 
     const tableOfPokemonInfos = [];
 
@@ -106,16 +104,16 @@ async function showPokemonFromType (tableOfType: string[]) {
         return "Oops! No pokemon match to your search.";
     }
 
-    if (tableOfPokemonsId) {
-        for (let id of tableOfPokemonsId) {
-            const pokemonInformations = await getOnePokemonFromAPI(id);
+    for (let id of tableOfPokemonsId) {
+        const pokemonInformations = await getOnePokemonFromAPI(id);
+        if (!pokemonInformations) return;
 
-            tableOfPokemonInfos.push( `
-                    <pokemon-card id="${pokemonInformations?.id}"
-                                  name="${pokemonInformations?.name}"
-                                  img="${imgPokemonFromInterface(pokemonInformations)}">
-                    </pokemon-card>`);
-        }
+        tableOfPokemonInfos.push(`
+            <pokemon-card id="${pokemonInformations.id}"
+                          name="${pokemonInformations.name}"
+                          img="${imgPokemonFromInterface(pokemonInformations)}">
+            </pokemon-card>`);
     }
+
     return tableOfPokemonInfos.join('');
 }

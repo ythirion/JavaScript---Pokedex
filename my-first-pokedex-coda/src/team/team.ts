@@ -251,6 +251,13 @@ function changeTeamOfLocalStorage() {
                     }
                 }
             }
+            const btnToChoose = document.querySelectorAll("[data-pokemon-id^=pokemon_]");
+            console.log(btnToChoose);
+            await openSearchToChoosePokemonForTeam(btnToChoose);
+
+            const test = document.querySelector("pokemon-team");
+            const result = test!.shadowRoot!.querySelector('button');
+            console.log(result);
         });
     }
 }

@@ -17,13 +17,11 @@ class PokemonCard extends HTMLElement {
              > 
              </div>`
 
-        this.addEventListener(
-            'click', async () => {
-                if(id){
-                    await renderPokemon(id);
-                }
-            }
-        );
+        this.addEventListener('click', async () => {
+            if (!id) return;
+            await renderPokemon(id);
+
+        });
     }
 }
 

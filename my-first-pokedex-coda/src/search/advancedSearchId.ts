@@ -4,8 +4,9 @@ import {imgPokemonFromInterface} from "./get-img.ts";
 // proceed the advanced search by id when button clicked
 export async function buttonSearchId () {
     const btnSearchId = document.getElementById('btnSearchId');
+    if (!btnSearchId) return;
 
-    btnSearchId?.addEventListener('click', () => {
+    btnSearchId.addEventListener('click', () => {
         const searchId = document.getElementById('id') as HTMLInputElement;
         const searchIdValue = searchId.value;
 
@@ -13,11 +14,12 @@ export async function buttonSearchId () {
         if ((searchIdValueToInt > 0 && searchIdValueToInt < 1026) ||
             (searchIdValueToInt > 10000 && searchIdValueToInt < 10326)) {
             showPokemonCorrespondingToId(searchIdValue);
+
         } else {
             const errorMessage = document.getElementById("message-error-id");
-            if (errorMessage) {
-                errorMessage.innerHTML = "The id should be between 1 and 1025 or 10001 and 10325.";
-            }
+            if (!errorMessage) return;
+
+            errorMessage.innerHTML = "The id should be between 1 and 1025 or 10001 and 10325.";
         }
     })
 }
@@ -26,18 +28,18 @@ export async function buttonSearchId () {
 async function showPokemonCorrespondingToId(id: string) {
 
     const pokemonInformations = await getOnePokemonFromAPI(id);
+    if (!pokemonInformations) return;
 
     const div = document.getElementById('div-pokemon')
+    if (!div) return;
 
-    if (div) {
-        div.innerHTML = "";
+    div.innerHTML = "";
 
-        const item = `
-                <pokemon-card id="${pokemonInformations?.id}" 
-                              name="${pokemonInformations?.name}" 
-                              img="${imgPokemonFromInterface(pokemonInformations)}">
-                </pokemon-card>`;
+    const item = `
+        <pokemon-card id="${pokemonInformations.id}" 
+                      name="${pokemonInformations.name}" 
+                      img="${imgPokemonFromInterface(pokemonInformations)}">
+        </pokemon-card>`;
 
-        div.innerHTML += item;
-    }
+    div.innerHTML += item;
 }
