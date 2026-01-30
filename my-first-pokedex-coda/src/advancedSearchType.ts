@@ -28,7 +28,7 @@ export async function buttonSearchType() {
     btnType?.addEventListener('click', async () => {
         const typeCheck = document.querySelectorAll("[name = 'types[]']:checked");
         let div = document.getElementById('div-pokemon');
-        if (typeCheck.length == 0) {
+        if (typeCheck.length === 0) {
             const errorMessage = document.getElementById('no-check-box-type');
             if (errorMessage) {
                 errorMessage.innerHTML = "You should select at least one type."

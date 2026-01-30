@@ -14,8 +14,6 @@ if (app) {
     app.appendChild(pokemonListContainer);
 }
 
-localStorage.setItem("iStorage", "1");
-
 await renderPokemons();
 await search();
 await showAdvancedSearch();

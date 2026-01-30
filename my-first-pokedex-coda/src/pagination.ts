@@ -29,11 +29,11 @@ export function previousPokemon (element: HTMLElement, id: string, callback:() =
     const setPrevious = () => {
         let idInt = parseInt(id);
         idInt -= 1 ;
-        if (idInt == 1 - 1) {
+        if (idInt === 1 - 1) {
             idInt = 10325;
         }
 
-        if (idInt == 10001 - 1) {
+        if (idInt === 10001 - 1) {
             idInt = 1025;
         }
         const idString = idInt.toString();

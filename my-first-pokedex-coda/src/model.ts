@@ -40,7 +40,7 @@ interface PokemonStat {
     };
 }
 
-interface PokemonType {
+export interface PokemonType {
     type: {
         name: string;
         url: string;
