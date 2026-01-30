@@ -1,6 +1,6 @@
-import {getOnePokemonFromAPI, getPokemonIdFromType, getTypes} from "./api.ts";
-import {imgPokemonFromInterface} from "./get-img.ts";
-import "./loader.ts"
+import {getOnePokemonFromAPI, getPokemonIdFromType, getTypes} from "../utils/api.ts";
+import {imgPokemonFromInterface} from "../utils/get-img.ts";
+import "../web-component/loader.ts"
 
 // show a checkbox for every type of the API
 export async function showTypeCheckbox() {

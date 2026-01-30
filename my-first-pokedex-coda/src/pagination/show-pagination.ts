@@ -1,6 +1,6 @@
 import {nextPage, nextPokemon, previousPage, previousPokemon} from "./pagination.ts";
-import {renderPokemons} from "./list-show.ts";
-import {renderPokemon} from "./pokemon-show.ts";
+import {renderPokemons} from "../list-show.ts";
+import {renderPokemon} from "../pokemon-show.ts";
 
 export function showPaginationButtons() {
 
@@ -8,7 +8,9 @@ export function showPaginationButtons() {
     buttonPreviousPage.id = "previous-button";
     buttonPreviousPage.textContent = "Previous Page";
 
-    document.getElementById('div-pokemon')?.appendChild(buttonPreviousPage);
+    const divContainer = document.getElementById('div-pokemon');
+    if (!divContainer) return;
+    divContainer.appendChild(buttonPreviousPage);
 
     previousPage(buttonPreviousPage, () => renderPokemons());
 
@@ -16,7 +18,7 @@ export function showPaginationButtons() {
     buttonNextPage.id = "next-button";
     buttonNextPage.textContent = "Next Page";
 
-    document.getElementById('div-pokemon')?.appendChild(buttonNextPage);
+    divContainer.appendChild(buttonNextPage);
 
     nextPage(buttonNextPage, () => renderPokemons());
 }
@@ -27,7 +29,9 @@ export function showPokemonPaginationButtons(id: string) {
     buttonPreviousPokemon.id = "previous-button";
     buttonPreviousPokemon.textContent = "Previous Pokemon";
 
-    document.getElementById('div-pokemon')?.appendChild(buttonPreviousPokemon);
+    const divContainer = document.getElementById('div-pokemon')
+    if (!divContainer) return;
+    divContainer.appendChild(buttonPreviousPokemon);
 
     previousPokemon(buttonPreviousPokemon, id, async () => {
         const idOfPokemon = buttonPreviousPokemon.getAttribute("data-id-pokemon");
@@ -40,7 +44,7 @@ export function showPokemonPaginationButtons(id: string) {
     buttonNextPokemon.id = "next-button";
     buttonNextPokemon.textContent = "Next Pokemon";
 
-    document.getElementById('div-pokemon')?.appendChild(buttonNextPokemon);
+    divContainer.appendChild(buttonNextPokemon);
 
     nextPokemon(buttonNextPokemon, id, async () => {
         const idOfPokemon = buttonNextPokemon.getAttribute("data-id-pokemon");

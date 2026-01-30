@@ -1,27 +1,25 @@
-import {offset} from "./pagination.ts";
-import {getPokemonsFromAPI} from './api.ts'
-import {imgPokemonFromInterface} from "./get-img.ts";
-import {showPaginationButtons} from "./show-pagination.ts";
-import "./pokemon-card.ts"
+import {offset} from "./pagination/pagination.ts";
+import {getPokemonsFromAPI} from './utils/api.ts';
+import {imgPokemonFromInterface} from "./utils/get-img.ts";
+import {showPaginationButtons} from "./pagination/show-pagination.ts";
+import './web-component/pokemon-card.ts';
 
-
-
-export async function renderPokemons () {
+export async function renderPokemons() {
     const pokemonsInformations = await getPokemonsFromAPI(20, offset);
+    if (!pokemonsInformations) return;
 
     const pokemonContainer = document.getElementById('div-pokemon');
+    if (!pokemonContainer) return;
 
-    if (pokemonContainer) {
-        pokemonContainer.innerHTML = "";
+    pokemonContainer.innerHTML = "";
 
-        pokemonsInformations?.map( pokemon => {
-            pokemonContainer.innerHTML += `
-                <pokemon-card id="${pokemon.id}" 
-                              name="${pokemon.name}" 
-                              img="${imgPokemonFromInterface(pokemon)}">
-                </pokemon-card>`
-                });
-    }
+    pokemonsInformations.map(pokemon => {
+        pokemonContainer.innerHTML += `
+            <pokemon-card id="${pokemon.id}" 
+                          name="${pokemon.name}" 
+                          img="${imgPokemonFromInterface(pokemon)}">
+            </pokemon-card>`
+    });
 
-    showPaginationButtons ()
+    showPaginationButtons()
 }

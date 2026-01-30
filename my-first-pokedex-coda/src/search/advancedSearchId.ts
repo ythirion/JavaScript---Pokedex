@@ -1,5 +1,5 @@
-import {getOnePokemonFromAPI} from "./api.ts";
-import {imgPokemonFromInterface} from "./get-img.ts";
+import {getOnePokemonFromAPI} from "../utils/api.ts";
+import {imgPokemonFromInterface} from "../utils/get-img.ts";
 
 // proceed the advanced search by id when button clicked
 export async function buttonSearchId () {

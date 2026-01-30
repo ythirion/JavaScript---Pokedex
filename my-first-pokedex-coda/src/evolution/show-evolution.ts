@@ -1,17 +1,19 @@
-import {getEvolution, getIdOfPokemonFromName, getNameOfPokemonFromId} from './api.ts'
-import {type Evolution, type ElementOfEvolution, type Pokemon} from "./model.ts";
-import "./pokemon-evolution.ts"
-import {imgPokemonFromId} from "./get-img.ts"
-import {getIdFromUrl} from "./regex.ts";
-import {renderPokemon} from "./pokemon-show.ts";
+import {getEvolution, getIdOfPokemonFromName, getNameOfPokemonFromId} from '../utils/api.ts'
+import {type Evolution, type ElementOfEvolution, type Pokemon} from "../utils/model.ts";
+import "../web-component/pokemon-evolution.ts"
+import {imgPokemonFromId} from "../utils/get-img.ts"
+import {getIdFromUrl} from "../utils/regex.ts";
+import {renderPokemon} from "../pokemon-show.ts";
 
 // get information of the evolution chain to give to renderPokemon function
 export async function showEvolution(pokemonInformations: Pokemon) {
     if (!pokemonInformations.name) return;
-    const pokemonEvolutions = await getEvolution(pokemonInformations?.name);
 
-    if (pokemonEvolutions?.chain?.evolves_to && pokemonEvolutions.chain.species?.url) {
-        const idOfFirstPokemon = getIdFromUrl(pokemonEvolutions.chain.species?.url);
+    const pokemonEvolutions = await getEvolution(pokemonInformations.name);
+    if (!pokemonEvolutions) return;
+
+    if (pokemonEvolutions.chain?.evolves_to && pokemonEvolutions.chain.species?.url) {
+        const idOfFirstPokemon = getIdFromUrl(pokemonEvolutions.chain.species.url);
         if (!idOfFirstPokemon) return;
 
         const nameOfFirstPokemon = await getNameOfPokemonFromId(idOfFirstPokemon);
@@ -40,9 +42,10 @@ export async function showEvolution(pokemonInformations: Pokemon) {
 // construct a table of informations for the evolution chain (previous pokemon / pokemon)
 export async function evolutionData(pokemonEvolutions: Evolution[], previousPokemon: string): Promise<ElementOfEvolution[]> {
     let table: ElementOfEvolution[] = []
+
     for (const pokemon of pokemonEvolutions) {
         if (pokemon.species?.name && pokemon.species?.url) {
-            const idOfPokemon = getIdFromUrl(pokemon.species?.url);
+            const idOfPokemon = getIdFromUrl(pokemon.species.url);
             if (!idOfPokemon) return [];
 
             const namePokemon = await getNameOfPokemonFromId(idOfPokemon);

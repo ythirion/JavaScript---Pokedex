@@ -1,10 +1,11 @@
-import {getNameOfAllPokemons, getOnePokemonFromAPI} from "./api.ts";
-import {imgPokemonFromInterface} from "./get-img.ts";
+import {getNameOfAllPokemons, getOnePokemonFromAPI} from "../utils/api.ts";
+import {imgPokemonFromInterface} from "../utils/get-img.ts";
 
 export async function search() {
     const searchButton = document.getElementById('searchBtn');
+    if (!searchButton) return;
 
-    searchButton?.addEventListener('click', () => {
+    searchButton.addEventListener('click', () => {
         const search = document.getElementById('search') as HTMLInputElement;
         const searchValue = search.value;
 
@@ -34,10 +35,11 @@ async function getPokemonCorrespondingToSearch(searchValue: string) {
 
     for (let name of arrayOfPokemon) {
         const pokemonInformations = await getOnePokemonFromAPI(name);
+        if (!pokemonInformations) return;
 
         pokemonContainer.innerHTML += `
-            <pokemon-card id="${pokemonInformations?.id}" 
-                          name="${pokemonInformations?.name}" 
+            <pokemon-card id="${pokemonInformations.id}" 
+                          name="${pokemonInformations.name}" 
                           img="${imgPokemonFromInterface(pokemonInformations)}">
             </pokemon-card>`
     }

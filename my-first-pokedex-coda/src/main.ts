@@ -1,10 +1,9 @@
-import './style.css'
+import './css/style.css'
 import './header.ts'
 import {renderPokemons} from "./list-show.ts";
-import {search} from "./search.ts";
-import {showAdvancedSearch} from "./advancedSearch.ts";
-import {showTeam} from "./team.ts";
-
+import {search} from "./search/search.ts";
+import {showAdvancedSearch} from "./search/advancedSearch.ts";
+import {showTeam} from "./team/team.ts";
 
 const pokemonListContainer = document.createElement('div');
 pokemonListContainer.id = 'div-pokemon';
