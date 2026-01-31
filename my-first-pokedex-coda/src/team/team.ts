@@ -8,7 +8,9 @@ if (!localStorage.getItem("iStorage")) {
     localStorage.setItem("iStorage", "1");
 }
 
-const teamOfPokemon : TeamOfPokemon = {};
+export let teamOfPokemon : TeamOfPokemon = {};
+export let isEditingLocalStorage = false;
+export let currentEditingTeamName = "";
 
 export function showTeam() {
 
@@ -16,55 +18,67 @@ export function showTeam() {
     if (!teamButton) return;
 
     teamButton.addEventListener('click', async () => {
+
+        isEditingLocalStorage = false;
+        teamOfPokemon = {};
+
         const page = document.getElementById('div-pokemon');
         if (!page) return;
 
         page.innerHTML = "";
 
-        for (let i = 1; i < 7; i++) {
-            const numberOfPokemon = "pokemon_" + i;
-
-            if (teamOfPokemon[numberOfPokemon as keyof TeamOfPokemon]) {
-                const type = teamOfPokemon[numberOfPokemon as keyof TeamOfPokemon]?.types.map(pokemonType =>
-                    `<img src="src/img/${pokemonType.type.name}.png" alt="${pokemonType.type.name}">`).join(" ");
-
-                page.innerHTML += `<pokemon-team id="${teamOfPokemon[numberOfPokemon as keyof TeamOfPokemon]?.id}"
-                    name="${teamOfPokemon[numberOfPokemon as keyof TeamOfPokemon]?.name}"
-                    img="${imgPokemonFromInterface(teamOfPokemon[numberOfPokemon as keyof TeamOfPokemon]!)}"
-                    i="${i}">
-                        ${type}
-                    </pokemon-team>`
-            } else {
-                page.innerHTML += `
-                    <div class="team">
-                        <p>Pokemon ${i}</p>
-                        <div id="team-number-${i}">
-                            <button type="button" data-pokemon-id="pokemon_${i}">Choose my pokemon</button>
-                        </div>
-                    </div>`
-            }
-        }
-
-        let teamName = ``;
-
-        for (let i = 1; i < 11; i++) {
-            teamName += `<h4 id="team-${i}">Team ${i}</h4>
-                <button type="button" id="change-team-${i}" data-change="team-${i}">Change team</button>`;
-        }
-
-        page.innerHTML += `<button type="button" id="save-local-storage">Sauvegarder mon équipe dans le localStorage</button>
-          <p id="error-message-storage"></p>
-          <h3>Mes équipes enregistrées</h3>
-          <div id="team-local-storage">
-          ${teamName}
-          </div>`;
+        showSixSpaceForPokemon(page);
+        showSpaceForTeamIntoLocalStorage(page);
 
         const btnToChoose = document.querySelectorAll("[data-pokemon-id]");
         await openSearchToChoosePokemonForTeam(btnToChoose);
+
         saveTeamIntoLocalStorage();
         showTeamIntoLocalStorage();
-        changeTeamOfLocalStorage();
+        await changeTeamOfLocalStorage();
     })
+}
+
+function showSixSpaceForPokemon(page: HTMLElement) {
+    for (let i = 1; i < 7; i++) {
+        const numberOfPokemon = "pokemon_" + i;
+
+        if (teamOfPokemon[numberOfPokemon as keyof TeamOfPokemon]) {
+            const type = teamOfPokemon[numberOfPokemon as keyof TeamOfPokemon]?.types.map(pokemonType =>
+                `<img src="src/img/${pokemonType.type.name}.png" alt="${pokemonType.type.name}">`).join(" ");
+
+            page.innerHTML += `<pokemon-team id="${teamOfPokemon[numberOfPokemon as keyof TeamOfPokemon]?.id}"
+                name="${teamOfPokemon[numberOfPokemon as keyof TeamOfPokemon]?.name}"
+                img="${imgPokemonFromInterface(teamOfPokemon[numberOfPokemon as keyof TeamOfPokemon]!)}">
+                    ${type}
+                </pokemon-team>
+                <button type="button" data-pokemon-id="${numberOfPokemon}">Change Pokemon</button>`
+        } else {
+            page.innerHTML += `
+                <div class="team">
+                    <p>Pokemon ${i}</p>
+                    <div id="team-number-${i}">
+                        <button type="button" data-pokemon-id="${numberOfPokemon}">Choose my pokemon</button>
+                    </div>
+                </div>`
+        }
+    }
+}
+
+function showSpaceForTeamIntoLocalStorage(page: HTMLElement) {
+    let teamName = ``;
+
+    for (let i = 1; i < 11; i++) {
+        teamName += `<h4 id="team-${i}">Team ${i}</h4>
+            <button type="button" id="change-team-${i}" data-change="team-${i}">Show team</button>`;
+    }
+
+    page.innerHTML += `<button type="button" id="save-local-storage">Sauvegarder mon équipe dans le localStorage</button>
+        <p id="error-message-storage"></p>
+        <h3>Mes équipes enregistrées</h3>
+        <div id="team-local-storage">
+        ${teamName}
+        </div>`;
 }
 
 async function openSearchToChoosePokemonForTeam(btnToChoose: NodeListOf<Element>) {
@@ -111,16 +125,26 @@ async function getPokemonCorrespondingToSearchForTeam(searchValue: string, eleme
     const pokemonContainer = document.getElementById('div-pokemon');
     if (!pokemonContainer) return;
 
-    const propositionOfPokemon = document.createElement('div');
-    if (!propositionOfPokemon) return;
-    propositionOfPokemon.id = "propositionOfPokemon";
+    const propositionOfPokemonContainer = document.createElement('div');
+    if (!propositionOfPokemonContainer) return;
+    propositionOfPokemonContainer.id = "propositionOfPokemon";
 
-    pokemonContainer.appendChild(propositionOfPokemon);
+    pokemonContainer.appendChild(propositionOfPokemonContainer);
 
-    propositionOfPokemon.innerHTML = "";
+    propositionOfPokemonContainer.innerHTML = "";
 
+    const pokemonMap = await showPokemonCorrespondingToSearchForTeam(arrayOfPokemon, propositionOfPokemonContainer);
+    if (!pokemonMap) return;
+
+    const pokemonCard = document.querySelectorAll('pokemon-team');
+
+    addEventListenerToPokemonCorrespondingToSearch(pokemonCard, elementId, pokemonMap);
+
+}
+
+async function showPokemonCorrespondingToSearchForTeam(arrayOfPokemon: string[], HTMLContainer: HTMLElement ): Promise<Record<string, Pokemon>> {
     if (arrayOfPokemon.length === 0) {
-        propositionOfPokemon.innerHTML += `<p>Oops! You haven't caught this pokemon yet.</p>`;
+        HTMLContainer.innerHTML += `<p>Oops! You haven't caught this pokemon yet.</p>`;
     }
 
     const pokemonMap: Record<string, Pokemon> = {};
@@ -134,20 +158,22 @@ async function getPokemonCorrespondingToSearchForTeam(searchValue: string, eleme
         const type = pokemonInformations.types.map(pokemonType =>
             `<img src="src/img/${pokemonType.type.name}.png" alt="${pokemonType.type.name}">`).join(" ");
 
-        propositionOfPokemon.innerHTML += `
-            <div class="pokemon-card"  id="${pokemonId}">
-                <p>${pokemonInformations.name}</p>
-                <img src="${imgPokemonFromInterface(pokemonInformations)}" alt="img of pokemon" height="100">
-                <p>${type}</p>
-            </div>`
+        HTMLContainer.innerHTML += `<pokemon-team id="${pokemonId}" 
+                                                  name="${pokemonInformations.name}" 
+                                                  img="${imgPokemonFromInterface(pokemonInformations)}">
+                                      ${type}
+                                    </pokemon-team>`
 
         pokemonMap[pokemonId] = pokemonInformations;
     }
 
-    const pokemonCard = document.querySelectorAll('.pokemon-card');
+    return pokemonMap;
+}
+
+function addEventListenerToPokemonCorrespondingToSearch(pokemonCard: NodeListOf<Element>, elementId: Element, pokemonMap: Record<string, Pokemon>) {
     for (const element of pokemonCard) {
 
-        element.addEventListener('click', () => {
+        element.addEventListener('click', async () => {
             const valueOfElement = elementId.getAttribute('data-pokemon-id');
             if (!valueOfElement) return;
             const pokemonId = element.getAttribute('id');
@@ -155,10 +181,27 @@ async function getPokemonCorrespondingToSearchForTeam(searchValue: string, eleme
 
             teamOfPokemon[valueOfElement as keyof TeamOfPokemon] = pokemonMap[pokemonId];
 
-            const btnTeam = document.getElementById('teamBtn');
-            if (!btnTeam) return;
+            if (isEditingLocalStorage) {
+                const pokemonContainer = document.getElementById('div-pokemon');
+                if (!pokemonContainer) return;
 
-            btnTeam.click();
+                pokemonContainer.innerHTML = "";
+
+                renderTeamInterface(pokemonContainer, currentEditingTeamName);
+
+                const newBtns = pokemonContainer.querySelectorAll("[data-pokemon-id]");
+                await openSearchToChoosePokemonForTeam(newBtns);
+
+                const newBtnSave = pokemonContainer.querySelector("[data-save-id]");
+                if (!newBtnSave) return;
+                saveExistingTeamIntoLocalStorage(newBtnSave);
+
+            } else {
+                const btnTeam = document.getElementById('teamBtn');
+                if (!btnTeam) return;
+
+                btnTeam.click();
+            }
         })
     }
 }
@@ -205,12 +248,12 @@ function showTeamIntoLocalStorage() {
                 const type = pokemon.types.map(pokemonType =>
                     `<img src="src/img/${pokemonType.type.name}.png" alt="${pokemonType.type.name}">`).join(" ");
 
-                teamContainer.innerHTML += `
-                    <div class="pokemon-card">
-                    <p>${pokemon.name}</p>
-                    <img src="${imgPokemonFromInterface(pokemon)}" alt="img of pokemon" height="100">
-                    <p>${type}</p>
-                    </div>`
+                teamContainer.innerHTML +=
+                    `<pokemon-team id="${pokemon.id}" 
+                                   name="${pokemon.name}" 
+                                   img="${imgPokemonFromInterface(pokemon)}">
+                        ${type}
+                    </pokemon-team>`
             })
         } else {
             const btnChangeTeam = document.getElementById(`change-team-${i}`);
@@ -221,54 +264,80 @@ function showTeamIntoLocalStorage() {
     }
 }
 
-function changeTeamOfLocalStorage() {
+async function changeTeamOfLocalStorage() {
     const btnChangeTeam = document.querySelectorAll('[data-change]');
     if (!btnChangeTeam) return;
 
     const pokemonContainer = document.getElementById('div-pokemon');
     if (!pokemonContainer) return;
 
+    showPokemonOfLocalStorageTeam(btnChangeTeam, pokemonContainer);
+}
+
+function showPokemonOfLocalStorageTeam(btnChangeTeam: NodeListOf<Element>, pokemonContainer: HTMLElement) {
     for (const element of btnChangeTeam) {
         element.addEventListener('click', async () => {
+
+            isEditingLocalStorage = true;
 
             pokemonContainer.innerHTML = "";
 
             const nameOfTeam = element.getAttribute('data-change');
             if (!nameOfTeam) return;
 
+            currentEditingTeamName = nameOfTeam;
+
             if (!localStorage.getItem(nameOfTeam)) return;
-            const teamOfPokemon: TeamOfPokemon = JSON.parse(localStorage.getItem(nameOfTeam)!);
+            const storedData = localStorage.getItem(nameOfTeam);
+            if (!storedData) return;
 
-            for (let i = 1; i < 7; i++) {
-                let numberOfPokemon = `pokemon_${i}`;
-                if (teamOfPokemon[numberOfPokemon as keyof TeamOfPokemon]) {
-                    const type = teamOfPokemon[numberOfPokemon as keyof TeamOfPokemon]?.types.map(pokemonType =>
-                        `<img src="src/img/${pokemonType.type.name}.png" alt="${pokemonType.type.name}">`).join(" ");
+            teamOfPokemon = JSON.parse(storedData);
 
-                    pokemonContainer.innerHTML += `<pokemon-team id="${teamOfPokemon[numberOfPokemon as keyof TeamOfPokemon]?.id}"
-                                        name="${teamOfPokemon[numberOfPokemon as keyof TeamOfPokemon]?.name}"
-                                        img="${imgPokemonFromInterface(teamOfPokemon[numberOfPokemon as keyof TeamOfPokemon]!)}"
-                                        i="${i}">
-                                            ${type}
-                                        </pokemon-team>`
-                } else {
-                    pokemonContainer.innerHTML += `
-                                    <div class="team">
-                                        <p>Pokemon ${i}</p>
-                                        <div id="team-number-${i}">
-                                         <button type="button" data-pokemon-id="pokemon_${i}">Choose my pokemon</button>
-                                        </div>
-                                    </div>`
-                }
-            }
+            renderTeamInterface(pokemonContainer, nameOfTeam);
 
-            const btnToChoose = document.querySelectorAll("[data-pokemon-id^=pokemon_]");
-            console.log(btnToChoose);
+            const btnToChoose = pokemonContainer.querySelectorAll("[data-pokemon-id^=pokemon_]");
             await openSearchToChoosePokemonForTeam(btnToChoose);
 
-            const test = document.querySelector("pokemon-team");
-            const result = test!.shadowRoot!.querySelector('button');
-            console.log(result);
+            const btnSaveChanges = pokemonContainer.querySelector("[data-save-id]");
+            if (!btnSaveChanges) return;
+            saveExistingTeamIntoLocalStorage(btnSaveChanges);
         });
     }
+}
+
+function renderTeamInterface(pokemonContainer: HTMLElement, nameOfTeam: string) {
+    for (let i = 1; i < 7; i++) {
+        let numberOfPokemon = `pokemon_${i}`;
+        if (teamOfPokemon[numberOfPokemon as keyof TeamOfPokemon]) {
+            const type = teamOfPokemon[numberOfPokemon as keyof TeamOfPokemon]?.types.map(pokemonType =>
+                `<img src="src/img/${pokemonType.type.name}.png" alt="${pokemonType.type.name}">`).join(" ");
+
+            pokemonContainer.innerHTML +=
+                `<pokemon-team id="${teamOfPokemon[numberOfPokemon as keyof TeamOfPokemon]!.id}"
+                    name="${teamOfPokemon[numberOfPokemon as keyof TeamOfPokemon]?.name}"
+                    img="${imgPokemonFromInterface(teamOfPokemon[numberOfPokemon as keyof TeamOfPokemon]!)}">
+                        ${type}
+                </pokemon-team>
+                <button type="button" data-pokemon-id="${numberOfPokemon}">Change Pokemon</button>`;
+        } else {
+            pokemonContainer.innerHTML += `
+                <div class="team">
+                    <p>Pokemon ${i}</p>
+                    <div id="team-number-${i}">
+                     <button type="button" data-pokemon-id="pokemon_${i}">Choose my pokemon</button>
+                    </div>
+                </div>`
+        }
+    }
+
+    pokemonContainer.innerHTML += `<button type="button" data-save-id="${nameOfTeam}">Save the team into Local Storage</button>`;
+}
+
+function saveExistingTeamIntoLocalStorage(btnSaveChanges: Element) {
+    btnSaveChanges.addEventListener('click', async () => {
+        const nameOfTeam = btnSaveChanges.getAttribute('data-save-id');
+        if (!nameOfTeam) return;
+
+        localStorage.setItem(nameOfTeam, JSON.stringify(teamOfPokemon));
+    })
 }
