@@ -1,4 +1,4 @@
-import type {Pokemon, ResultAPI, EvolutionChain, Evolutions, Generations, Type} from "./model.ts";
+import type {Pokemon, ResultAPI, EvolutionChain, Evolutions, Generations, Type, PokemonWeakness} from "./model.ts";
 import {getIdFromUrl} from "./regex.ts";
 
 export async function getOnePokemonFromAPI(name: string): Promise<Pokemon | null>  {
@@ -247,4 +247,23 @@ export async function getPokemonIdFromGen(gen: string): Promise<string[] | null>
         console.error(error);
         return null;
     }
+}
+
+export async function getRelationDamageOfType(type: string): Promise<PokemonWeakness | null> {
+    const urlAPI = `https://pokeapi.co/api/v2/type/${type}`;
+
+        try {
+            const response = await fetch(urlAPI);
+
+            if (!response.ok) {
+                throw new Error(response.statusText);
+            }
+
+            const pokemonWeakness = await response.json() as PokemonWeakness;
+            return pokemonWeakness;
+
+        } catch (error) {
+            console.error(error);
+            return null;
+        }
 }

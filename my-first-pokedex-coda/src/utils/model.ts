@@ -100,3 +100,14 @@ export interface TeamOfPokemon {
     pokemon_5?: Pokemon;
     pokemon_6?: Pokemon;
 }
+
+export interface PokemonWeakness {
+    damage_relations: {
+        double_damage_from: Result[];
+        double_damage_to: Result[];
+        half_damage_from: Result[];
+        half_damage_to: Result[];
+        no_damage_from: Result[];
+        no_damage_to: Result[];
+    }
+}

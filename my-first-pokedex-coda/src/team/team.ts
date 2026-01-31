@@ -1,16 +1,16 @@
 import {getOnePokemonFromAPI} from "../utils/api.ts";
 import {imgPokemonFromInterface} from "../utils/get-img.ts";
 import {comparePokemonFromAll} from "../search/search.ts";
-import type {TeamOfPokemon, Pokemon} from "../utils/model.ts"
-import "../web-component/pokemon-team.ts"
+import type {TeamOfPokemon, Pokemon} from "../utils/model.ts";
+import "../web-component/pokemon-team.ts";
 
 if (!localStorage.getItem("iStorage")) {
     localStorage.setItem("iStorage", "1");
 }
 
-export let teamOfPokemon : TeamOfPokemon = {};
-export let isEditingLocalStorage = false;
-export let currentEditingTeamName = "";
+let teamOfPokemon : TeamOfPokemon = {};
+let isEditingLocalStorage = false;
+let currentEditingTeamName = "";
 
 export function showTeam() {
 
@@ -20,7 +20,6 @@ export function showTeam() {
     teamButton.addEventListener('click', async () => {
 
         isEditingLocalStorage = false;
-        teamOfPokemon = {};
 
         const page = document.getElementById('div-pokemon');
         if (!page) return;
@@ -256,22 +255,22 @@ function showTeamIntoLocalStorage() {
                     </pokemon-team>`
             })
         } else {
-            const btnChangeTeam = document.getElementById(`change-team-${i}`);
-            if (!btnChangeTeam) return;
+            const btnShowTeam = document.getElementById(`change-team-${i}`);
+            if (!btnShowTeam) return;
 
-            btnChangeTeam.setAttribute('hidden', 'hidden');
+            btnShowTeam.setAttribute('hidden', 'hidden');
         }
     }
 }
 
 async function changeTeamOfLocalStorage() {
-    const btnChangeTeam = document.querySelectorAll('[data-change]');
-    if (!btnChangeTeam) return;
+    const btnShowTeam = document.querySelectorAll('[data-change]');
+    if (!btnShowTeam) return;
 
     const pokemonContainer = document.getElementById('div-pokemon');
     if (!pokemonContainer) return;
 
-    showPokemonOfLocalStorageTeam(btnChangeTeam, pokemonContainer);
+    showPokemonOfLocalStorageTeam(btnShowTeam, pokemonContainer);
 }
 
 function showPokemonOfLocalStorageTeam(btnChangeTeam: NodeListOf<Element>, pokemonContainer: HTMLElement) {
@@ -301,6 +300,16 @@ function showPokemonOfLocalStorageTeam(btnChangeTeam: NodeListOf<Element>, pokem
             const btnSaveChanges = pokemonContainer.querySelector("[data-save-id]");
             if (!btnSaveChanges) return;
             saveExistingTeamIntoLocalStorage(btnSaveChanges);
+
+
+
+
+            // Faire tests ici !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+
+
         });
     }
 }
