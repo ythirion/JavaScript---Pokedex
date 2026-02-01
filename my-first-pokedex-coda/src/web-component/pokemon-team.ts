@@ -12,7 +12,8 @@ class PokemonTeam extends HTMLElement {
         if (this.shadowRoot) {
             this.shadowRoot.innerHTML = `<div class="pokemon-card" id="${id}">
                 <p>${name}</p>
-                <img src="${img}" alt="img of pokemon" height="100">
+                <img src=${img} alt="Image of ${name}" 
+                height="100" onerror="this.src='src/img/favicon.png'; this.onerror=null;">
                 <slot></slot>
             </div>`
         }

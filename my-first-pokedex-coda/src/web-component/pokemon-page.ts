@@ -12,7 +12,7 @@ class PokemonPage extends HTMLElement {
 
         if (this.shadowRoot) {
             this.shadowRoot.innerHTML = `<div class="pokemon-page" data-id-pokemon="${id}">
-                <img src=${img} alt="Image de ${name}" 
+                <img src=${img} alt="Image of ${name}" 
                 height="200" onerror="this.src='src/img/favicon.png'; this.onerror=null;">
                 <p>${name}</p>
                 <p>Id : #${id}</p>

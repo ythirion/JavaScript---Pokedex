@@ -12,7 +12,7 @@ class PokemonCard extends HTMLElement {
 
         this.innerHTML = `<div class="pokemon-card" data-id-pokemon="${id}">
              <h3>#${id} ${name}</h3>
-             <img src=${img} alt="Image de ${name}" 
+             <img src=${img} alt="Image of ${name}" 
                 height="100" onerror="this.src='src/img/favicon.png'; this.onerror=null;"> 
              </div>`
 
