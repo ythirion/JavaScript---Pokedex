@@ -3,6 +3,7 @@ import {imgPokemonFromInterface} from "../utils/get-img.ts";
 import {comparePokemonFromAll} from "../search/search.ts";
 import type {TeamOfPokemon, Pokemon} from "../utils/model.ts";
 import "../web-component/pokemon-team.ts";
+import {getEveryRelationDamageForTeam} from "./weakness-team.ts";
 
 if (!localStorage.getItem("iStorage")) {
     localStorage.setItem("iStorage", "1");
@@ -184,16 +185,7 @@ function addEventListenerToPokemonCorrespondingToSearch(pokemonCard: NodeListOf<
                 const pokemonContainer = document.getElementById('div-pokemon');
                 if (!pokemonContainer) return;
 
-                pokemonContainer.innerHTML = "";
-
-                renderTeamInterface(pokemonContainer, currentEditingTeamName);
-
-                const newBtns = pokemonContainer.querySelectorAll("[data-pokemon-id]");
-                await openSearchToChoosePokemonForTeam(newBtns);
-
-                const newBtnSave = pokemonContainer.querySelector("[data-save-id]");
-                if (!newBtnSave) return;
-                saveExistingTeamIntoLocalStorage(newBtnSave);
+                await refreshEditionInterface(pokemonContainer, currentEditingTeamName);
 
             } else {
                 const btnTeam = document.getElementById('teamBtn');
@@ -292,14 +284,7 @@ function showPokemonOfLocalStorageTeam(btnChangeTeam: NodeListOf<Element>, pokem
 
             teamOfPokemon = JSON.parse(storedData);
 
-            renderTeamInterface(pokemonContainer, nameOfTeam);
-
-            const btnToChoose = pokemonContainer.querySelectorAll("[data-pokemon-id^=pokemon_]");
-            await openSearchToChoosePokemonForTeam(btnToChoose);
-
-            const btnSaveChanges = pokemonContainer.querySelector("[data-save-id]");
-            if (!btnSaveChanges) return;
-            saveExistingTeamIntoLocalStorage(btnSaveChanges);
+            await refreshEditionInterface(pokemonContainer, nameOfTeam)
 
 
 
@@ -348,5 +333,20 @@ function saveExistingTeamIntoLocalStorage(btnSaveChanges: Element) {
         if (!nameOfTeam) return;
 
         localStorage.setItem(nameOfTeam, JSON.stringify(teamOfPokemon));
+
+        alert("Team successfully saved to Local Storage!");
     })
+}
+
+async function refreshEditionInterface(container: HTMLElement, teamName: string) {
+    container.innerHTML = "";
+    renderTeamInterface(container, teamName);
+
+    await getEveryRelationDamageForTeam(teamOfPokemon);
+
+    const btnToChoose = container.querySelectorAll("[data-pokemon-id]");
+    await openSearchToChoosePokemonForTeam(btnToChoose);
+
+    const btnSaveChanges = container.querySelector("[data-save-id]");
+    if (btnSaveChanges) saveExistingTeamIntoLocalStorage(btnSaveChanges);
 }

@@ -10,11 +10,13 @@ export async function getEveryRelationDamageForTeam(team: TeamOfPokemon) {
     const noDamageFrom = await getRelationDamageFromTypes(tableOfTypeFromTeam, "no_damage_from");
     const noDamageTo = await getRelationDamageFromTypes(tableOfTypeFromTeam, "no_damage_to");
 
-    const tableOfWeaknessDefense = await calculateWeaknessDefense(doubleDamageFrom, halfDamageFrom, noDamageFrom);
-    const tableOfWeaknessAttack = await calculateWeaknessAttack(doubleDamageTo, halfDamageTo, noDamageTo)
+    const tableOfWeaknessDefense = await calculateWeakness(doubleDamageFrom, halfDamageFrom, noDamageFrom);
+    const tableOfWeaknessAttack = await calculateWeakness(doubleDamageTo, halfDamageTo, noDamageTo)
+
+    getWeaknessesTypesOfATeam(tableOfWeaknessDefense, tableOfWeaknessAttack);
 }
 
-export function getAllTypesFromTeam(team: TeamOfPokemon) {
+function getAllTypesFromTeam(team: TeamOfPokemon) {
     const result = new Set<string>();
 
     for (let i = 1; i < 7; i++) {
@@ -32,7 +34,7 @@ export function getAllTypesFromTeam(team: TeamOfPokemon) {
     return tableOfTypeFromTeam;
 }
 
-export async function getRelationDamageFromTypes(tableOfType: string[], damage: keyof PokemonWeakness['damage_relations']): Promise<string[]> {
+async function getRelationDamageFromTypes(tableOfType: string[], damage: keyof PokemonWeakness['damage_relations']): Promise<string[]> {
 
     const result = new Set<string>();
 
@@ -49,10 +51,10 @@ export async function getRelationDamageFromTypes(tableOfType: string[], damage: 
     return tableOfResult;
 }
 
-async function calculateWeaknessDefense(doubleDamageFrom: string[], halfDamageFrom: string[], noDamageFrom: string[]) {
+async function calculateWeakness(doubleDamage: string[], halfDamage: string[], noDamage: string[]) {
 
     const tableOfAllTypes = await getTypes();
-    if (!tableOfAllTypes) return;
+    if (!tableOfAllTypes) return [];
 
     const scores: Record<string, number> = {};
 
@@ -60,19 +62,19 @@ async function calculateWeaknessDefense(doubleDamageFrom: string[], halfDamageFr
         scores[type] = 1.0;
     })
 
-    doubleDamageFrom.forEach((type) => {
+    doubleDamage.forEach((type) => {
         if (scores[type]) {
             scores[type] *= 2;
         }
     })
 
-    halfDamageFrom.forEach((type) => {
+    halfDamage.forEach((type) => {
         if (scores[type]) {
             scores[type] *= 0.5;
         }
     })
 
-    noDamageFrom.forEach((type) => {
+    noDamage.forEach((type) => {
         if (scores[type]) {
             scores[type] *= 0;
         }
@@ -82,35 +84,49 @@ async function calculateWeaknessDefense(doubleDamageFrom: string[], halfDamageFr
     return tableOfResult;
 }
 
-async function calculateWeaknessAttack(doubleDamageTo: string[], halfDamageTo: string[], noDamageTo: string[]) {
+function getWeaknessesTypesOfATeam(tableOfWeaknessDefense: [string, number][], tableOfWeaknessAttack: [string, number][] ) {
+    const tableOftypesWeakDefense: string[] = [];
 
-    const tableOfAllTypes = await getTypes();
-    if (!tableOfAllTypes) return;
+    tableOfWeaknessDefense.filter(([typeName, score]) => {
+        if (score > 1)
+            tableOftypesWeakDefense.push(typeName);
+    } );
 
-    const scores: Record<string, number> = {};
+    const tableOftypesWeakAttack: string[] = [];
 
-    tableOfAllTypes.forEach((type) => {
-        scores[type] = 1.0;
-    })
+    tableOfWeaknessAttack.filter(([typeName, score]) => {
+        if(score < 1)
+            tableOftypesWeakAttack.push(typeName);
+    } );
 
-    doubleDamageTo.forEach((type) => {
-        if (scores[type]) {
-            scores[type] *= 2;
-        }
-    })
+    showWeaknessOfTeam(tableOftypesWeakDefense, tableOftypesWeakAttack);
+}
 
-    halfDamageTo.forEach((type) => {
-        if (scores[type]) {
-            scores[type] *= 0.5;
-        }
-    })
+function showWeaknessOfTeam(tableOftypesWeakDefense: string[], tableOftypesWeakAttack : string[]) {
+    const teamContainer = document.getElementById('div-pokemon');
+    if (!teamContainer) return;
 
-    noDamageTo.forEach((type) => {
-        if (scores[type]) {
-            scores[type] *= 0;
-        }
-    })
+    let defenseWeakHTML = "";
+    let attackWeakHTML = "";
 
-    const tableOfResult = Object.entries(scores);
-    return tableOfResult;
+    for (const type of tableOftypesWeakDefense) {
+        defenseWeakHTML += `<img src="src/img/${type}.png" alt="Type ${type}">`;
+    }
+
+    for (const type of tableOftypesWeakAttack) {
+        attackWeakHTML += `<img src="src/img/${type}.png" alt="Type ${type}">`;
+    }
+
+    teamContainer.innerHTML +=
+        `<div id="weakness-pokemon">
+            <div class="defense-weakness">
+                <p>Defense weaknesses of the team :</p>
+                    ${defenseWeakHTML || `<p>Your team doesn't have defense weakness !</p>`}
+            </div>
+            <div class="attack-weakness">
+                <p>Attack weaknesses of the team :</p>
+                    ${attackWeakHTML || `<p>Your team doesn't have attack weakness !</p>`}
+            </div>
+        </div>
+    `;
 }
