@@ -14,6 +14,6 @@ if (app) {
 }
 
 await renderPokemons();
-await search();
+search();
 await showAdvancedSearch();
 showTeam();

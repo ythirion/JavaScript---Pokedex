@@ -51,7 +51,7 @@ async function getRelationDamageFromTypes(tableOfType: string[], damage: keyof P
     return tableOfResult;
 }
 
-async function calculateWeakness(doubleDamage: string[], halfDamage: string[], noDamage: string[]) {
+export async function calculateWeakness(doubleDamage: string[], halfDamage: string[], noDamage: string[]) {
 
     const tableOfAllTypes = await getTypes();
     if (!tableOfAllTypes) return [];
