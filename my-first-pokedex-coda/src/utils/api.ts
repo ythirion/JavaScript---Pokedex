@@ -1,4 +1,13 @@
-import type {Pokemon, ResultAPI, EvolutionChain, Evolutions, Generations, Type, PokemonWeakness} from "./model.ts";
+import type {
+    Pokemon,
+    ResultAPI,
+    EvolutionChain,
+    Evolutions,
+    Generations,
+    Type,
+    PokemonWeakness,
+    Abilities
+} from "./model.ts";
 import {getIdFromUrl} from "./regex.ts";
 
 export async function getOnePokemonFromAPI(name: string): Promise<Pokemon | null>  {
@@ -249,6 +258,59 @@ export async function getPokemonIdFromGen(gen: string): Promise<string[] | null>
         const tableOfPokemonIdToString = tableOfPokemonId.map(String);
 
         return tableOfPokemonIdToString;
+
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
+export async function getAbilities() {
+    const urlAPI = `https://pokeapi.co/api/v2/ability?offset=0&limit=367`;
+
+    try {
+        const response = await fetch(urlAPI);
+        if (!response.ok) {
+            throw new Error(response.statusText);
+        }
+        const data = await response.json() as ResultAPI;
+
+        const tableOfAbilities = [];
+
+        for (let ability of data.results) {
+            const nameOfAbility = ability.name;
+            tableOfAbilities.push(nameOfAbility);
+        }
+
+        return tableOfAbilities;
+
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
+export async function getPokemonIdFromAbility(ability: string): Promise<string[] | null> {
+    const urlAPI = `https://pokeapi.co/api/v2/ability/${ability}/`;
+
+    try {
+        const response = await fetch(urlAPI);
+        if (!response.ok) {
+            throw new Error(response.statusText);
+        }
+        const data = await response.json() as Abilities;
+
+        const tableOfPokemonId: string[] = [];
+
+        for (let pokemon of data.pokemon) {
+            const urlOfPokemon = pokemon.pokemon.url;
+            const idOfPokemon = getIdFromUrl(urlOfPokemon);
+            if (!idOfPokemon) return null;
+
+            tableOfPokemonId.push(idOfPokemon);
+        }
+
+        return tableOfPokemonId;
 
     } catch (error) {
         console.error(error);

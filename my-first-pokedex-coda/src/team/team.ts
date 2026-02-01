@@ -33,7 +33,7 @@ export function showTeam() {
         const btnToChoose = document.querySelectorAll("[data-pokemon-id]");
         await openSearchToChoosePokemonForTeam(btnToChoose);
 
-        saveTeamIntoLocalStorage();
+        saveTeamIntoLocalStorage(page);
         showTeamIntoLocalStorage();
         await changeTeamOfLocalStorage();
     })
@@ -68,7 +68,7 @@ function showSixSpaceForPokemon(page: HTMLElement) {
 function showSpaceForTeamIntoLocalStorage(page: HTMLElement) {
     let teamName = ``;
 
-    for (let i = 1; i < 11; i++) {
+    for (let i = 1; i < 6; i++) {
         teamName += `<h4 id="team-${i}">Team ${i}</h4>
             <button type="button" id="change-team-${i}" data-change="team-${i}">Show team</button>`;
     }
@@ -197,8 +197,8 @@ function addEventListenerToPokemonCorrespondingToSearch(pokemonCard: NodeListOf<
     }
 }
 
-function saveTeamIntoLocalStorage() {
-    const btnSave = document.getElementById('save-local-storage');
+function saveTeamIntoLocalStorage(container: HTMLElement) {
+    const btnSave = container.querySelector('#save-local-storage');
     if (!btnSave) return;
 
     btnSave.addEventListener('click', async () => {
@@ -207,13 +207,15 @@ function saveTeamIntoLocalStorage() {
 
         let iStorageToNb = parseInt(iStorage);
 
-        if (iStorageToNb === 11) {
+        if (iStorageToNb === 6) {
             const errorMessage = document.getElementById('error-message-storage');
             if (!errorMessage) return;
 
-            errorMessage.innerHTML = "You can't have more than 10 teams.";
+            errorMessage.innerHTML = "You can't have more than 5 teams.";
         } else {
             localStorage.setItem(`team-${iStorage}`, JSON.stringify(teamOfPokemon));
+            alert("New team successfully saved!");
+
             ++iStorageToNb;
             localStorage.setItem(`iStorage`, `${iStorageToNb}`);
 

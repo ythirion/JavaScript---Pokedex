@@ -1,11 +1,11 @@
 import {getNameOfAllPokemons, getOnePokemonFromAPI} from "../utils/api.ts";
 import {imgPokemonFromInterface} from "../utils/get-img.ts";
 
-export async function search() {
+export function search() {
     const searchButton = document.getElementById('searchBtn');
     if (!searchButton) return;
 
-    searchButton.addEventListener('click', () => {
+    searchButton.addEventListener('click', async () => {
         const search = document.getElementById('search') as HTMLInputElement;
         const searchValue = search.value;
 
@@ -15,7 +15,7 @@ export async function search() {
 
             errorMessage.innerHTML = "Please enter at least 3 characters.";
         } else {
-            getPokemonCorrespondingToSearch(searchValue);
+            await getPokemonCorrespondingToSearch(searchValue);
         }
     })
 }

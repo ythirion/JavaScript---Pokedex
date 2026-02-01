@@ -92,6 +92,17 @@ interface PokemonOfType {
     };
 }
 
+export interface Abilities {
+    pokemon: PokemonOfAbility[];
+}
+
+interface PokemonOfAbility {
+    pokemon: {
+        name: string;
+        url: string;
+    }
+}
+
 export interface TeamOfPokemon {
     pokemon_1?: Pokemon;
     pokemon_2?: Pokemon;

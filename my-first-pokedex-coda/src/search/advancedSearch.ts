@@ -1,6 +1,7 @@
 import {showTypeCheckbox, buttonSearchType} from "./advancedSearchType.ts";
 import {showGenerationCheckbox, buttonSearchGeneration} from "./advancedSearchGeneration.ts";
 import {buttonSearchId} from "./advancedSearchId.ts";
+import {searchAbility} from "./advancedSearchAbility.ts";
 
 // show advanced search page (by id / by type / by abilities / by generation
 export async function showAdvancedSearch() {
@@ -28,9 +29,10 @@ export async function showAdvancedSearch() {
             ${checkboxTypes}
             <input type="button" value="Search" id="btnSearchTypes">
             <p id="no-check-box-type"></p>
-            <!--à voir plus tard quand on aura la foi
             <h3>Abilities</h3>
-            <input type="button" value="Search" id="btnSearchAbilities"> -->
+            <input type="search" id="search-ability" placeholder="Search a ability by name...">
+            <p id="list-of-abilities"></p>
+            <input type="button" value="Search" id="btnSearchAbilities">
             <h3>Generations</h3>
             ${checkboxGeneration}
             <input type="button" value="Search" id="btnSearchGen">
@@ -39,6 +41,7 @@ export async function showAdvancedSearch() {
 
         await buttonSearchId();
         await buttonSearchType();
+        await searchAbility();
         await buttonSearchGeneration();
     })
 }
