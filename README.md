@@ -40,4 +40,4 @@ les consulter ultérieurement ou modifier une stratégie existante sans perdre s
 
 ## Contributeurs
 
-Auteurs : @beetiips / @CDassé
+Auteurs : @beetiips / @CDasse
