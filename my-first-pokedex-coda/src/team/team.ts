@@ -285,16 +285,6 @@ function showPokemonOfLocalStorageTeam(btnChangeTeam: NodeListOf<Element>, pokem
             teamOfPokemon = JSON.parse(storedData);
 
             await refreshEditionInterface(pokemonContainer, nameOfTeam)
-
-
-
-
-            // Faire tests ici !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
-
-
-
         });
     }
 }

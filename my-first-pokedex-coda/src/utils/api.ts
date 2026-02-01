@@ -231,17 +231,24 @@ export async function getPokemonIdFromGen(gen: string): Promise<string[] | null>
         }
         const data = await response.json() as Generations;
 
-        const tableOfPokemonId = [];
+        const tableOfPokemonId: number[] = [];
 
         for (let pokemon of data.pokemon_species) {
             const urlOfPokemon = pokemon.url;
             const idOfPokemon = getIdFromUrl(urlOfPokemon);
             if (!idOfPokemon) return null;
 
-            tableOfPokemonId.push(idOfPokemon);
+            const idOfPokemonToInt = parseInt(idOfPokemon);
+
+            tableOfPokemonId.push(idOfPokemonToInt);
         }
 
-        return tableOfPokemonId;
+        // The id of pokemons from API aren't in order
+        tableOfPokemonId.sort((a, b) => a - b);
+
+        const tableOfPokemonIdToString = tableOfPokemonId.map(String);
+
+        return tableOfPokemonIdToString;
 
     } catch (error) {
         console.error(error);
