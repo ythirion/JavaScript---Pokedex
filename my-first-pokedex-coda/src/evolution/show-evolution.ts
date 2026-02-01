@@ -3,7 +3,7 @@ import {type Evolution, type ElementOfEvolution, type Pokemon} from "../utils/mo
 import "../web-component/pokemon-evolution.ts"
 import {imgPokemonFromId} from "../utils/get-img.ts"
 import {getIdFromUrl} from "../utils/regex.ts";
-import {renderPokemon} from "../pokemon-show.ts";
+import {linkToPokemonOfEvolutionChain} from "./link-pokemon-evolution.ts";
 
 // get information of the evolution chain to give to renderPokemon function
 export async function showEvolution(pokemonInformations: Pokemon) {
@@ -83,23 +83,4 @@ async function showPokemonEvolution(firstPokemon: ElementOfEvolution, imgUrl: st
         }
     }
     return text;
-}
-
-// add link to pokemon clicked in the evolution chain
-async function linkToPokemonOfEvolutionChain() {
-    const linkToPokemonOfEvolutionChain = document.getElementsByClassName('pokemon-of-evolution-chain');
-    for (let element of linkToPokemonOfEvolutionChain) {
-        const nameOfElement = element.getAttribute('id');
-        if (!nameOfElement) return;
-
-        const idPokemon = await getIdOfPokemonFromName(nameOfElement);
-        if (!idPokemon) return;
-
-        const idPokemonToString = idPokemon.toString();
-        if (!idPokemonToString) return;
-
-        element.addEventListener("click", () => {
-            renderPokemon(idPokemonToString);
-        });
-    }
 }

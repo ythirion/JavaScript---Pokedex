@@ -1,8 +1,6 @@
 import {nextPage, nextPokemon, previousPage, previousPokemon} from "./pagination.ts";
-import {renderPokemons} from "../list-show.ts";
-import {renderPokemon} from "../pokemon-show.ts";
 
-export function showPaginationButtons() {
+export function showPaginationButtons(onPageChange: () => void) {
 
     const buttonPreviousPage = document.createElement('button');
     buttonPreviousPage.id = "previous-button";
@@ -12,7 +10,7 @@ export function showPaginationButtons() {
     if (!divContainer) return;
     divContainer.appendChild(buttonPreviousPage);
 
-    previousPage(buttonPreviousPage, () => renderPokemons());
+    previousPage(buttonPreviousPage, onPageChange);
 
     const buttonNextPage = document.createElement('button');
     buttonNextPage.id = "next-button";
@@ -20,10 +18,10 @@ export function showPaginationButtons() {
 
     divContainer.appendChild(buttonNextPage);
 
-    nextPage(buttonNextPage, () => renderPokemons());
+    nextPage(buttonNextPage, onPageChange);
 }
 
-export function showPokemonPaginationButtons(id: string) {
+export function showPokemonPaginationButtons(id: string, onNavigate: (targetId: string) => Promise<void>) {
 
     const buttonPreviousPokemon = document.createElement('button');
     buttonPreviousPokemon.id = "previous-button";
@@ -37,7 +35,7 @@ export function showPokemonPaginationButtons(id: string) {
         const idOfPokemon = buttonPreviousPokemon.getAttribute("data-id-pokemon");
         if (!idOfPokemon) return;
 
-        await renderPokemon(idOfPokemon);
+        await onNavigate(idOfPokemon);
     });
 
     const buttonNextPokemon = document.createElement('button');
@@ -50,6 +48,6 @@ export function showPokemonPaginationButtons(id: string) {
         const idOfPokemon = buttonNextPokemon.getAttribute("data-id-pokemon");
         if (!idOfPokemon) return;
 
-        await renderPokemon(idOfPokemon);
+        await onNavigate(idOfPokemon);
     });
 }

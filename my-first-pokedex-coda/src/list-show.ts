@@ -21,5 +21,5 @@ export async function renderPokemons() {
             </pokemon-card>`
     });
 
-    showPaginationButtons()
+    showPaginationButtons(() => renderPokemons())
 }

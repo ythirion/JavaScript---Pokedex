@@ -30,5 +30,5 @@ export async function renderPokemon(name: string) {
 
     await showEvolution(pokemonInformations);
 
-    showPokemonPaginationButtons(name);
+    showPokemonPaginationButtons(name, (newName) => renderPokemon(newName));
 }
