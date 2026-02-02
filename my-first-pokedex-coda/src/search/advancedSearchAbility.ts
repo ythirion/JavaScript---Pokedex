@@ -1,5 +1,6 @@
 import {getAbilities, getOnePokemonFromAPI, getPokemonIdFromAbility} from "../utils/api.ts";
 import {imgPokemonFromInterface} from "../utils/get-img.ts";
+import {resetFilters} from "./resetFilter.ts";
 
 
 export async function searchAbility() {
@@ -39,11 +40,13 @@ async function getAbilitiesCorrespondingToSearch(searchValue: string) {
         btn.type = "button";
         btn.textContent = ability;
         btn.id = ability;
-        btn.setAttribute('data-search-ability', `btn-ability-${ability}`);
+        btn.className = "btn-ability";
 
         btn.addEventListener('click', async () => {
+            document.querySelectorAll('.btn-ability').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
             await getPokemonOfAbilities(ability);
-            btn.textContent = ability;
         });
 
         abilitiesContainer.appendChild(btn);
@@ -59,18 +62,20 @@ async function compareAbilityFromAll(searchValue: string) {
 }
 
 async function getPokemonOfAbilities(abilityName: string) {
-    const pageContainer = document.getElementById('div-pokemon');
-    if (!pageContainer) return;
-
-    pageContainer.innerHTML = `<pokeball-loader></pokeball-loader>`;
+    const resultsContainer = document.getElementById('search-results');
+    if (!resultsContainer) return;
 
     const pokemonsId = await getPokemonIdFromAbility(abilityName);
     if (!pokemonsId) return;
 
     if (pokemonsId.length === 0) {
-        pageContainer.innerHTML = `<p>Oops! You didn't catch this pokemon yet.</p>`;
+        resultsContainer.innerHTML = `<p>Oops! You didn't catch this pokemon yet.</p>`;
         return;
     }
+
+    resetFilters();
+
+    resultsContainer.innerHTML = `<pokeball-loader></pokeball-loader>`;
 
     let allPokemonHTML = "";
 
@@ -90,5 +95,5 @@ async function getPokemonOfAbilities(abilityName: string) {
             </pokemon-card>`;
     }
 
-    pageContainer.innerHTML = allPokemonHTML;
+    resultsContainer.innerHTML = allPokemonHTML;
 }

@@ -1,6 +1,7 @@
 import {getGenerations, getOnePokemonFromAPI, getPokemonIdFromGen} from "../utils/api.ts";
 import {imgPokemonFromInterface} from "../utils/get-img.ts";
 import "../web-component/loader.ts"
+import {resetFilters} from "./resetFilter.ts";
 
 // show a checkbox for every generation of the API
 export async function showGenerationCheckbox() {
@@ -11,7 +12,10 @@ export async function showGenerationCheckbox() {
     let i = 1;
 
     for (let generation of tableOfGeneration) {
-        checkboxGeneration += `<input type='checkbox' name='gen[]' id='${i}'>` + generation + "</input>";
+        checkboxGeneration += `<div class="filter-item">
+                <input type='checkbox' name='gen[]' id='gen-${i}' value='${generation}' class='${i}'>
+                <label for='gen-${i}'>${generation}</label>
+            </div>`;
         i++;
     }
 
@@ -25,8 +29,8 @@ export async function buttonSearchGeneration() {
 
     btnGeneration.addEventListener('click', async () => {
         const genCheck = document.querySelectorAll("[name = 'gen[]']:checked");
-        let div = document.getElementById('div-pokemon');
-        if (!div) return;
+        const resultsContainer = document.getElementById('search-results');
+        if (!resultsContainer) return;
 
         if (genCheck.length == 0) {
             const errorMessage = document.getElementById('no-check-box-gen');
@@ -35,13 +39,15 @@ export async function buttonSearchGeneration() {
             return;
         }
 
-        div.innerHTML = `<pokeball-loader></pokeball-loader>`;
-
         const tableOfGen = []
         for (let element of genCheck) {
-            let id = element.getAttribute('id');
+            let id = element.getAttribute('class');
             tableOfGen.push(id);
         }
+
+        resetFilters();
+
+        resultsContainer.innerHTML = `<pokeball-loader></pokeball-loader>`;
 
         let allPokemonHTML = "";
 
@@ -52,7 +58,7 @@ export async function buttonSearchGeneration() {
 
         }
 
-        div.innerHTML = allPokemonHTML;
+        resultsContainer.innerHTML = allPokemonHTML;
     })
 }
 

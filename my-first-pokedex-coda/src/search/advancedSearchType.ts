@@ -1,6 +1,7 @@
 import {getOnePokemonFromAPI, getPokemonIdFromType, getTypes} from "../utils/api.ts";
 import {imgPokemonFromInterface} from "../utils/get-img.ts";
 import "../web-component/loader.ts"
+import {resetFilters} from "./resetFilter.ts";
 
 // show a checkbox for every type of the API
 export async function showTypeCheckbox() {
@@ -14,7 +15,10 @@ export async function showTypeCheckbox() {
     for (let type of tableOfTypes) {
         //API non mis à jour, aucun pokemon de type unknown ou stellar
         if (type !== "stellar" && type !== "unknown")
-            checkboxTypes += `<input type='checkbox' name='types[]' class='${j}'>` + type + "</input>";
+            checkboxTypes += `<div class="filter-item">
+                <input type='checkbox' name='types[]' class='${j}' id="type-${type}">
+                <label for="type-${type}">${type}</label>
+            </div>`;
         j++;
     }
 
@@ -28,8 +32,8 @@ export async function buttonSearchType() {
 
     btnType.addEventListener('click', async () => {
         const typeCheck = document.querySelectorAll("[name = 'types[]']:checked");
-        let div = document.getElementById('div-pokemon');
-        if (!div) return;
+        const resultsContainer = document.getElementById('search-results');
+        if (!resultsContainer) return;
 
         if (typeCheck.length === 0) {
             const errorMessage = document.getElementById('no-check-box-type');
@@ -37,8 +41,6 @@ export async function buttonSearchType() {
             errorMessage.innerHTML = "You should select at least one type.";
             return;
         }
-
-        div.innerHTML = `<pokeball-loader></pokeball-loader>`;
 
         const tableOfTypes: string[] = []
         if (!tableOfTypes) return;
@@ -50,12 +52,16 @@ export async function buttonSearchType() {
             tableOfTypes.push(id);
         }
 
+        resetFilters();
+
+        resultsContainer.innerHTML = `<pokeball-loader></pokeball-loader>`;
+
         let allPokemonHTML = "";
 
         const typeHTML = await showPokemonFromType(tableOfTypes);
         allPokemonHTML += typeHTML;
 
-        div.innerHTML = allPokemonHTML;
+        resultsContainer.innerHTML = allPokemonHTML;
     })
 }
 

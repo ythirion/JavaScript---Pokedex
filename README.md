@@ -6,8 +6,9 @@ Notre site se base sur les données de **PokéAPI** et est entièrement en **ang
 ## Installation du projet et lancement
 
 1. Installer la dépendance npm : `npm install`
-2. Lancer le projet : `npm run dev`
-3. Lancer les tests : `npm run test`
+2. Installer vitest : `npm intall -D vitest`
+3Lancer le projet : `npm run dev`
+4Lancer les tests : `npm run test`
 
 ## Description du projet
 

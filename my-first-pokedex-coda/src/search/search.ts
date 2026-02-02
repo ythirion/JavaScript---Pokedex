@@ -9,10 +9,12 @@ export function search() {
         const search = document.getElementById('search') as HTMLInputElement;
         const searchValue = search.value;
 
-        if (searchValue.length < 3) {
-            const errorMessage = document.getElementById('error-message');
-            if (!errorMessage) return;
+        const errorMessage = document.getElementById('error-message');
+        if (!errorMessage) return;
 
+        errorMessage.innerHTML = "";
+
+        if (searchValue.length < 3) {
             errorMessage.innerHTML = "Please enter at least 3 characters.";
         } else {
             await getPokemonCorrespondingToSearch(searchValue);

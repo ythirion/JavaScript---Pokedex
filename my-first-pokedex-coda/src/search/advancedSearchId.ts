@@ -1,5 +1,6 @@
 import {getOnePokemonFromAPI} from "../utils/api.ts";
 import {imgPokemonFromInterface} from "../utils/get-img.ts";
+import {resetFilters} from "./resetFilter.ts";
 
 // proceed the advanced search by id when button clicked
 export async function buttonSearchId () {
@@ -30,10 +31,10 @@ async function showPokemonCorrespondingToId(id: string) {
     const pokemonInformations = await getOnePokemonFromAPI(id);
     if (!pokemonInformations) return;
 
-    const div = document.getElementById('div-pokemon')
-    if (!div) return;
+    const resultsContainer = document.getElementById('search-results');
+    if (!resultsContainer) return;
 
-    div.innerHTML = "";
+    resultsContainer.innerHTML = "";
 
     const item = `
         <pokemon-card id="${pokemonInformations.id}" 
@@ -41,5 +42,7 @@ async function showPokemonCorrespondingToId(id: string) {
                       img="${imgPokemonFromInterface(pokemonInformations)}">
         </pokemon-card>`;
 
-    div.innerHTML += item;
+    resetFilters();
+
+    resultsContainer.innerHTML += item;
 }

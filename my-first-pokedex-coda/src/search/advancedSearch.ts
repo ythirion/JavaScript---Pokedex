@@ -16,28 +16,44 @@ export async function showAdvancedSearch() {
         const pageContainer = document.getElementById('div-pokemon');
         if (!pageContainer) return;
 
-        pageContainer.innerHTML = "";
+        pageContainer.style.display = "grid";
+        pageContainer.innerHTML = `
+            <div class="advanced-search-container">
+                <aside class="search-sidebar">
+                    <h2>Filters</h2>
+                    
+                    <section>
+                        <h3>By ID</h3>
+                        <input type="number" id="id" placeholder="Ex: 25">
+                        <button id="btnSearchId" class="btn-neon">Search ID</button>
+                        <p id="message-error-id" class="error"></p>
+                    </section>
 
-        pageContainer.innerHTML += `
-            <h2>Advanced Search</h2>
-            <h3>Id Pokemon</h3>
-            <label for="id">Id</label>
-            <input type="number" name="id" id="id">
-            <input type="button" value="Search" id="btnSearchId">
-            <p id="message-error-id"></p>
-            <h3>Types</h3>
-            ${checkboxTypes}
-            <input type="button" value="Search" id="btnSearchTypes">
-            <p id="no-check-box-type"></p>
-            <h3>Abilities</h3>
-            <input type="search" id="search-ability" placeholder="Search a ability by name...">
-            <p id="list-of-abilities"></p>
-            <input type="button" value="Search" id="btnSearchAbilities">
-            <h3>Generations</h3>
-            ${checkboxGeneration}
-            <input type="button" value="Search" id="btnSearchGen">
-            <p id="no-check-box-gen"></p>
-            `
+                    <section>
+                        <h3>By Types</h3>
+                        <div class="filter-group">${checkboxTypes}</div>
+                        <button id="btnSearchTypes" class="btn-neon">Filter Types</button>
+                    </section>
+
+                    <section>
+                        <h3>By Ability</h3>
+                        <input type="search" id="search-ability" placeholder="Ability name...">
+                        <div id="list-of-abilities"></div>
+                        <button id="btnSearchAbilities" class="btn-neon">Search Ability</button>
+                    </section>
+
+                    <section>
+                        <h3>By Generation</h3>
+                        <div class="filter-group">${checkboxGeneration}</div>
+                        <button id="btnSearchGen" class="btn-neon">Filter Generation</button>
+                    </section>
+                </aside>
+
+                <main id="search-results" class="pokedex-grid">
+                    <p class="placeholder-text">Select filters to start searching...</p>
+                </main>
+            </div>
+        `;
 
         await buttonSearchId();
         await buttonSearchType();

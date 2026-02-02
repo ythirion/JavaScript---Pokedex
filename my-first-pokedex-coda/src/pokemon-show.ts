@@ -11,10 +11,15 @@ export async function renderPokemon(name: string) {
     const pokemonContainer = document.getElementById('div-pokemon');
     if (!pokemonContainer) return;
 
-    const stat = pokemonInformations.stats.map(pokemonStat =>
-        `<p> ${pokemonStat.stat.name}: ${pokemonStat.base_stat} </p>`).join(" ");
-
     pokemonContainer.innerHTML = "";
+
+    const stat = pokemonInformations.stats.map(pokemonStat => `
+        <div class="stat-row">
+            <span class="stat-label">${pokemonStat.stat.name}</span>
+            <progress value="${pokemonStat.base_stat}" max="200"></progress>
+            <span class="stat-value">${pokemonStat.base_stat}</span>
+        </div>
+    `).join("");
 
     pokemonContainer.innerHTML += `
         <pokemon-page id="${pokemonInformations.id}" 
