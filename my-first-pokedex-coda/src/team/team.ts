@@ -25,6 +25,8 @@ export function showTeam() {
         const page = document.getElementById('div-pokemon');
         if (!page) return;
 
+        page.className = 'page-team';
+
         page.innerHTML = "";
 
         showSixSpaceForPokemon(page);
@@ -40,6 +42,9 @@ export function showTeam() {
 }
 
 function showSixSpaceForPokemon(page: HTMLElement) {
+    let HTMLContent = `<div class="team-header"><h3>Create a new team</h3></div>`;
+    HTMLContent += `<div class="team-grid">`;
+
     for (let i = 1; i < 7; i++) {
         const numberOfPokemon = "pokemon_" + i;
 
@@ -47,14 +52,17 @@ function showSixSpaceForPokemon(page: HTMLElement) {
             const type = teamOfPokemon[numberOfPokemon as keyof TeamOfPokemon]?.types.map(pokemonType =>
                 `<img src="src/img/${pokemonType.type.name}.png" alt="${pokemonType.type.name}">`).join(" ");
 
-            page.innerHTML += `<pokemon-team id="${teamOfPokemon[numberOfPokemon as keyof TeamOfPokemon]?.id}"
-                name="${teamOfPokemon[numberOfPokemon as keyof TeamOfPokemon]?.name}"
-                img="${imgPokemonFromInterface(teamOfPokemon[numberOfPokemon as keyof TeamOfPokemon]!)}">
-                    ${type}
-                </pokemon-team>
-                <button type="button" data-pokemon-id="${numberOfPokemon}">Change Pokemon</button>`
+            HTMLContent +=
+                `<div class="slot-full">
+                    <pokemon-team id="${teamOfPokemon[numberOfPokemon as keyof TeamOfPokemon]?.id}"
+                    name="${teamOfPokemon[numberOfPokemon as keyof TeamOfPokemon]?.name}"
+                    img="${imgPokemonFromInterface(teamOfPokemon[numberOfPokemon as keyof TeamOfPokemon]!)}">
+                        ${type}
+                    </pokemon-team>
+                    <button type="button" data-pokemon-id="${numberOfPokemon}">Change Pokemon</button>
+                </div>`;
         } else {
-            page.innerHTML += `
+            HTMLContent += `
                 <div class="team">
                     <p>Pokemon ${i}</p>
                     <div id="team-number-${i}">
@@ -63,21 +71,34 @@ function showSixSpaceForPokemon(page: HTMLElement) {
                 </div>`
         }
     }
+    HTMLContent += `</div>`;
+    page.innerHTML += HTMLContent;
 }
 
 function showSpaceForTeamIntoLocalStorage(page: HTMLElement) {
-    let teamName = ``;
+    let teamItemsHTML = ``;
 
     for (let i = 1; i < 6; i++) {
-        teamName += `<h4 id="team-${i}">Team ${i}</h4>
-            <button type="button" id="change-team-${i}" data-change="team-${i}">Show team</button>`;
+        teamItemsHTML += `
+            <div class="saved-team-container" id="team-box-${i}">
+                <h4 id="team-${i}">Team ${i}</h4>
+                <div class="pokemon-mini-grid" id="preview-team-${i}">
+                </div>
+                <button type="button" class="btn-view-team" id="change-team-${i}" data-change="team-${i}">Show team</button>
+            </div>`;
     }
 
-    page.innerHTML += `<button type="button" id="save-local-storage">Sauvegarder mon équipe dans le localStorage</button>
-        <p id="error-message-storage"></p>
-        <h3>Mes équipes enregistrées</h3>
-        <div id="team-local-storage">
-        ${teamName}
+    page.innerHTML += `
+        <div class="save-action-container">
+             <button type="button" id="save-local-storage">Save my team into LocalStorage</button>
+             <p id="error-message-storage"></p>
+        </div>
+
+        <div class="saved-teams-section">
+            <h3>My saved teams</h3>
+            <div class="saved-teams-grid">
+                ${teamItemsHTML}
+            </div>
         </div>`;
 }
 
@@ -229,9 +250,9 @@ function saveTeamIntoLocalStorage(container: HTMLElement) {
 
 function showTeamIntoLocalStorage() {
 
-    for (let i = 1; i < 11; i++) {
+    for (let i = 1; i < 6; i++) {
         if (localStorage.getItem(`team-${i}`)) {
-            let teamContainer = document.getElementById(`team-${i}`);
+            let teamContainer = document.getElementById(`preview-team-${i}`);
             if (!teamContainer) return;
 
             let pokemons: TeamOfPokemon = JSON.parse(localStorage.getItem(`team-${i}`)!);
@@ -292,6 +313,13 @@ function showPokemonOfLocalStorageTeam(btnChangeTeam: NodeListOf<Element>, pokem
 }
 
 function renderTeamInterface(pokemonContainer: HTMLElement, nameOfTeam: string) {
+    pokemonContainer.innerHTML = `
+        <div class="team-grid">
+            </div>
+        <div class="team-footer">
+            <button type="button" data-save-id="${nameOfTeam}">Save the team into Local Storage</button>
+        </div>`;
+
     for (let i = 1; i < 7; i++) {
         let numberOfPokemon = `pokemon_${i}`;
         if (teamOfPokemon[numberOfPokemon as keyof TeamOfPokemon]) {

@@ -455,6 +455,8 @@ pokemon-page progress::-moz-progress-bar {
     grid-auto-rows: 1fr; /* MAGIE : Force toutes les lignes à avoir la même hauteur */
     gap: 20px;
     align-items: stretch; /* Étire toutes les cartes pour qu'elles fassent la même taille */
+    position: relative; /* On définit le référent */
+    min-height: 300px;
 }
 
 /* On stabilise l'intérieur de la carte */
@@ -610,12 +612,21 @@ pokemon-page progress::-moz-progress-bar {
 
 /* L'image de la favicon */
 .pokedex-spinner {
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
     /* L'animation que l'on définit juste en dessous */
     animation: spinLoader 2s linear infinite;
     filter: drop-shadow(0 0 10px #00f2ff);
     margin-bottom: 15px;
+    position: absolute;
+    left: 300%
+}
+
+.loader-wrapper p {
+    position: absolute;
+    left: 290%;
+    top : 40%;
+    width: 200%;
 }
 
 /* L'animation de rotation */
@@ -636,4 +647,146 @@ pokemon-page progress::-moz-progress-bar {
     letter-spacing: 2px;
     font-size: 0.9rem;
     margin: 0;
+}
+
+#search-results .placeholder-text {
+    position: absolute;
+    left: 300%;
+    top: 50px; /* Ajuste selon la hauteur voulue */
+    transform: translateX(-50%); /* Centre parfaitement horizontalement */
+    width: 300%;
+    text-align: center;
+    color: #00f2ff;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    margin: 0;
+    pointer-events: none; /* Pour ne pas gêner les clics */
+    flex-grow: 5;
+}
+
+/*--------------------------------------------------------------------------*/
+/*--------------------------------- TEAM -----------------------------------*/
+/*--------------------------------------------------------------------------*/
+
+/* --- 1. STRUCTURE GLOBALE DE LA PAGE --- */
+#div-pokemon.page-team {
+    display: block !important; /* On annule la grid globale de recherche */
+    width: 95%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* --- 2. SECTION CRÉATION (HAUT) --- */
+.page-team .team-header h3 {
+    text-align: left;
+    color: #00f2ff;
+    margin: 20px 0;
+    text-transform: uppercase;
+}
+
+/* La grille des 6 Pokémons (3 colonnes) */
+.page-team .team-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important; /* 3 colonnes égales */
+    grid-template-rows: repeat(2, auto);               /* 2 lignes automatiques */
+    gap: 60px;
+    margin-bottom: 40px;
+    width: 100%;
+}
+
+/* Style des "slots" vides et des cartes dans la grille */
+.page-team .team, .page-team .slot-full {
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px dashed rgba(0, 242, 255, 0.3);
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+}
+
+.page-team .team p {
+    font-family: 'Courier New', monospace;
+    color: #888;
+    text-transform: uppercase;
+}
+
+/* --- 3. ACTIONS (BOUTON SAVE) --- */
+.page-team .save-action-container {
+    display: flex;
+    flex-direction: column; /* Force l'empilement vertical */
+    align-items: center;    /* Centre tout le monde horizontalement */
+    gap: 10px;              /* Ajoute un petit espace entre le bouton et le texte */
+    width: 100%;
+    margin: 40px 0;
+}
+
+.page-team #error-message-storage {
+    color: #ff4444;        /* Un rouge un peu plus "alerte" */
+    font-size: 0.9rem;
+    margin: 0;             /* On enlève les marges par défaut qui pourraient décaler */
+    text-align: center;
+    min-height: 1.2rem;    /* Optionnel : réserve l'espace même si vide pour éviter les sauts */
+}
+
+.page-team button {
+    background: #16222d;
+    color: #00f2ff;
+    border: 1px solid #00f2ff;
+    padding: 10px 20px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: 0.3s;
+}
+
+.page-team button:hover {
+    background: #00f2ff;
+    color: #000;
+    box-shadow: 0 0 10px #00f2ff;
+}
+
+/* --- 4. SECTION SAUVEGARDES (BAS) --- */
+.page-team .saved-teams-section h3 {
+    text-align: center;
+    color: white;
+    margin: 40px 0;
+    text-transform: uppercase;
+    font-size: 1.8rem;
+}
+
+/* Grid 2 colonnes pour les équipes enregistrées */
+.page-team .saved-teams-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 30px;
+}
+
+/* Boîte de l'équipe */
+.page-team .saved-team-container {
+    border: 2px solid #00f2ff;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Mini-vignettes internes (2 lignes de 3) */
+.page-team .pokemon-mini-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    border: 1px solid rgba(0, 242, 255, 0.2);
+    padding: 10px;
+    margin: 15px 0;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.page-team .pokemon-mini-grid pokemon-team {
+    transform: scale(0.65); /* Réduction des miniatures */
+    margin: -15px; /* On réduit l'espace perdu autour du scale */
 }
