@@ -1,4 +1,4 @@
-import logoUrl from "../img/favicon.png";
+import logoUrl from './img/favicon.png'
 const base = import.meta.env.BASE_URL
 
 const header = `
