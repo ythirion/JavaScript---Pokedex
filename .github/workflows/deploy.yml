@@ -18,12 +18,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: 24
 
       - name: Install dependencies
+        working-directory: ./my-first-pokedex-coda
         run: npm ci
 
       - name: Build
