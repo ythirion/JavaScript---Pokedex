@@ -1,8 +1,11 @@
+import logoUrl from "../img/favicon.png";
+const base = import.meta.env.BASE_URL
+
 const header = `
     <header>
         <div class="header-top">
-            <a href="../index.html" class="logo-link">
-                <img src="src/img/favicon.png" alt="Back to home page" id="main-logo">
+            <a href="${base}" class="logo-link">
+                <img src="${logoUrl}" alt="Back to home page" id="main-logo">
             </a>
             <h1>Pokedex</h1>
         </div>
